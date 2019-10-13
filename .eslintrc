@@ -1,0 +1,37 @@
+{
+  "root": true,
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "env": {
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
+  "rules": {
+    "arrow-parens": [
+      "error",
+      "as-needed",
+      {
+        "requireForBlockBody": true
+      }
+    ],
+    "no-underscore-dangle": "off",
+    "react/jsx-filename-extension": "off",
+    "no-unused-vars": [
+      "warn",
+      {
+        "varsIgnorePattern": "React"
+      }
+    ],
+    "import/no-unresolved": [
+      "error",
+      {
+        "ignore": [
+          "react",
+          "react-native"
+        ]
+      }
+    ],
+    "import/no-extraneous-dependencies": "off"
+  }
+}
