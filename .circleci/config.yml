@@ -6,9 +6,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Lint Code
-          command: yarn lint
-      - run:
           name: Run Tests
           command: yarn test
 workflows:
