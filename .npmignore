@@ -8,3 +8,4 @@ examples
 .eslintignore
 .gitignore
 .circleci
+.npmrc
