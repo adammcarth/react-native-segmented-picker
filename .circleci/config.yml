@@ -6,6 +6,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install Dependencies
+          command: yarn
+      - run:
           name: Run Tests
           command: yarn test
 workflows:
