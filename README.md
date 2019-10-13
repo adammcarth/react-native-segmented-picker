@@ -20,8 +20,8 @@ $ yarn add react-native-segmented-picker
 
 ## Usage
 
-```js
-import React, { Component } from 'react;
+```jsx
+import React, { Component } from 'react';
 import SegmentedPicker from 'react-native-segmented-picker';
 
 class Example extends Component {
