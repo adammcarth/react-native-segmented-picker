@@ -1,13 +1,21 @@
 version: 2.1
 jobs:
-  test:
+  build_and_test:
     docker:
       - image: circleci/node:8.10.0
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - rev1-npm-deps-{{ checksum "yarn.lock" }}
+            - rev1-npm-deps-
       - run:
           name: Install Dependencies
           command: yarn
+      - save_cache:
+          key: rev1-npm-deps-{{ checksum "yarn.lock" }}
+          paths:
+            - "node_modules"
       - run:
           name: Run Tests
           command: yarn test
@@ -15,4 +23,4 @@ workflows:
   version: 2.1
   run-tests:
     jobs:
-      - test
+      - build_and_test
