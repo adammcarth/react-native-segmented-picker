@@ -15,7 +15,7 @@ A pure JavaScript implementation of the iOS style wheel spinner dropdown picker 
 ```bash
 $ yarn add react-native-segmented-picker
 # or
-$ npm install --save react-native-segmented-picker
+# $ npm install --save react-native-segmented-picker
 ```
 
 ## Usage
