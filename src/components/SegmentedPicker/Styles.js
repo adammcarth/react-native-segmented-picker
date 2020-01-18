@@ -93,7 +93,7 @@ export const SelectionMarkerContainer = styled(View)`
 /* Eliminates border rendering inconsistencies between iOS & Android */
 export const SelectionMarkerBorder = styled(View)`
   width: 100%;
-  height: 1;
+  height: 1px;
 `;
 
 export const SelectionMarker = styled(View)`
