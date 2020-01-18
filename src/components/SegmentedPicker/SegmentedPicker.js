@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Platform,
   Modal,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -20,6 +21,10 @@ class SegmentedPicker extends Component {
     this.selectionChanges = {};
     this.modalContainerRef = React.createRef();
     this.pickerContainerRef = React.createRef();
+
+    if (!props.options) {
+      throw new Error('<SegmentedPicker /> cannot render without the `options` prop.');
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -228,6 +233,7 @@ class SegmentedPicker extends Component {
    * @return {void}
    */
   _nearestOptionIndex = (offsetY, column) => {
+    const { options } = this.props;
     const scrollDirection = this[`scrollDirection_${column}`]; // 0 = Up, 1 = Down
     const rounding = (scrollDirection === 0) ? 'floor' : 'ceil';
     const adjustedOffsetY = (scrollDirection === 0) ? (
@@ -235,7 +241,14 @@ class SegmentedPicker extends Component {
     ) : (
       (offsetY / UI.consts.ITEM_HEIGHT) - 0.35
     );
-    const nearestArrayMember = Math[rounding](adjustedOffsetY) || 0;
+    let nearestArrayMember = Math[rounding](adjustedOffsetY) || 0;
+    // Safety checks making sure we don't return an out of range index
+    const columnSize = Object.keys(options[column]).length;
+    if (Math.sign(nearestArrayMember) === -1) {
+      nearestArrayMember = 0;
+    } else if (nearestArrayMember > columnSize - 1) {
+      nearestArrayMember = columnSize - 1;
+    }
     return nearestArrayMember;
   }
 
@@ -247,6 +260,7 @@ class SegmentedPicker extends Component {
    * @return {void}
    */
   _onScroll = (event, column) => {
+    if (!event.nativeEvent) return;
     const { y } = event.nativeEvent.contentOffset;
     const lastScrollOffset = this[`lastScrollOffset_${column}`];
     if (lastScrollOffset < y) {
@@ -275,8 +289,24 @@ class SegmentedPicker extends Component {
    * @param {string} column
    * @return {void}
    */
-  _onScrollEndDrag = (column) => {
+  _onScrollEndDrag = (event, column) => {
     this[`isDragging_${column}`] = false;
+    if (Platform.OS === 'ios' && !this[`isMomentumScrolling_${column}`]) {
+      // Not required on Android because all scrolls exit as momentum scrolls,
+      // so the below method has already been called prior to this event.
+      // Timeout is to temporarily allow raising fingers.
+      this._selectIndexFromScrollPosition(event, column, 280);
+    }
+  };
+
+  /**
+   * @private
+   * @param {object} event: Event details from React Native.
+   * @param {string} column
+   * @return {void}
+   */
+  _onMomentumScrollBegin = (event, column) => {
+    this[`isMomentumScrolling_${column}`] = true;
   };
 
   /**
@@ -286,11 +316,29 @@ class SegmentedPicker extends Component {
    * @return {void}
    */
   _onMomentumScrollEnd = (event, column) => {
+    this[`isMomentumScrolling_${column}`] = false;
+    if (!this[`isDragging_${column}`]) {
+      this._selectIndexFromScrollPosition(event, column);
+    }
+  };
+
+  /**
+   * @private
+   * Scrolls to the nearest index based off a y offset from the FlatList.
+   * @param {object} event: Event details from React Native.
+   * @param {string} column
+   * @param {number?} delay
+   * @return {void}
+   */
+  _selectIndexFromScrollPosition = (event, column, delay = 0) => {
+    if (!event.nativeEvent) return;
     const { y } = event.nativeEvent.contentOffset;
     const nearestOptionIndex = this._nearestOptionIndex(y, column);
-    if (!this[`isDragging_${column}`]) {
-      this.selectIndex(nearestOptionIndex, column);
-    }
+    setTimeout(() => {
+      if (!this[`isDragging_${column}`] && !this[`isMomentumScrolling_${column}`]) {
+        this.selectIndex(nearestOptionIndex, column);
+      }
+    }, delay);
   };
 
   /**
@@ -356,8 +404,10 @@ class SegmentedPicker extends Component {
         visible={this._isVisible()}
         animationType="none"
         transparent
+        onRequestClose={this._onCancel}
       >
         <UI.ModalContainer
+          useNativeDriver
           animation="fadeIn"
           easing="ease-out-cubic"
           duration={this.animationTime}
@@ -368,6 +418,7 @@ class SegmentedPicker extends Component {
           </TouchableWithoutFeedback>
 
           <UI.PickerContainer
+            useNativeDriver
             animation="slideInUp"
             easing="ease-in-out-cubic"
             duration={this.animationTime}
@@ -431,7 +482,8 @@ class SegmentedPicker extends Component {
                       ref={ref => this._setFlatListRef(ref, column)}
                       onScroll={event => this._onScroll(event, column)}
                       onScrollBeginDrag={() => this._onScrollBeginDrag(column)}
-                      onScrollEndDrag={() => this._onScrollEndDrag(column)}
+                      onScrollEndDrag={event => this._onScrollEndDrag(event, column)}
+                      onMomentumScrollBegin={event => this._onMomentumScrollBegin(event, column)}
                       onMomentumScrollEnd={event => this._onMomentumScrollEnd(event, column)}
                       scrollEventThrottle={32}
                     />
@@ -449,7 +501,7 @@ class SegmentedPicker extends Component {
 SegmentedPicker.defaultProps = {
   visible: null,
   defaultSelections: {},
-  size: 40,
+  size: 45,
   confirmText: 'Done',
   confirmTextColor: '#0A84FF',
   listItemTextColor: '#282828',
