@@ -1,0 +1,11 @@
+{
+  "root": false,
+  "rules": {
+    "no-unused-vars": [
+      "warn",
+      {
+        "varsIgnorePattern": "React|react-native-segmented-picker"
+      }
+    ]
+  }
+}
