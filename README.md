@@ -12,7 +12,7 @@ A pure JavaScript implementation of the iOS style wheel spinner dropdown picker 
 - Does not rely on native dependencies (`npm link` not required).
 - Works with apps built on [Expo](https://expo.io).
 
-![Android Example](https://imgkk.com/i/g07e.gif)
+![Android Example](https://imgkk.com/i/z_da.gif)
 ![iOS Example](https://imgkk.com/i/qk1d.gif)
 
 ## Installation
