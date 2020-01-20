@@ -9,7 +9,7 @@ A pure JavaScript implementation of the iOS style wheel spinner dropdown picker 
 - Supports one or many columns (list segments).
 - Show any data in the picklists, not just [dates and times](https://github.com/henninghall/react-native-date-picker).
 - Customisable colors and sizing.
-- Does not rely on native dependencies (`npm link` not required).
+- Does not rely on native dependencies (`react-native link` not required).
 - Works with apps built on [Expo](https://expo.io).
 
 ![Android Example](https://imgkk.com/i/z_da.gif)
