@@ -463,9 +463,13 @@ class SegmentedPicker extends Component {
 
                   <UI.PickerList>
                     <FlatList
-                      data={options[column].map(({ label }) => ({ label, column }))}
+                      data={options[column].map(({ label, key }) => ({
+                        label,
+                        key,
+                        column,
+                      }))}
                       renderItem={this._renderPickerItem}
-                      keyExtractor={item => `${column}_${item.label}`}
+                      keyExtractor={item => `${column}_${item.key || item.label}`}
                       initialNumToRender={40}
                       getItemLayout={(data, index) => (
                         {
