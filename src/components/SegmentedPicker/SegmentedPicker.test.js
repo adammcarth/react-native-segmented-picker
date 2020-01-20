@@ -1,5 +1,5 @@
 import React from 'react';
-import 'react-native';
+import { FlatList } from 'react-native';
 import renderer from 'react-test-renderer';
 import SegmentedPicker from './SegmentedPicker';
 
@@ -81,6 +81,31 @@ describe('SegmentedPicker', () => {
         }}
       />,
     );
+  });
+
+  it('Sets the react "key" of list items correctly', () => {
+    const column1 = 'column1';
+    const listData = {
+      [column1]: [
+        { label: 'Adam' },
+        { label: 'Francesca', key: 'fran' },
+      ],
+    };
+    const testRenderer = renderer.create(
+      <SegmentedPicker
+        visible
+        options={listData}
+      />,
+    );
+    const testInstance = testRenderer.root;
+    jest.advanceTimersByTime(1000);
+    const {
+      props: { data, keyExtractor: listItemKeyExtractor },
+    } = testInstance.findByType(FlatList);
+    expect(listItemKeyExtractor(data[0]))
+      .toBe(`${column1}_${listData[column1][0].label}`);
+    expect(listItemKeyExtractor(data[1]))
+      .toBe(`${column1}_${listData[column1][1].key}`);
   });
 
   it('Can be shown and hidden programmatically.', () => {

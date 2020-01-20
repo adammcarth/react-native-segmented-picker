@@ -56,7 +56,7 @@ class Example extends Component {
             { label: 'Option 2' },
           ],
           column2: [
-            { label: 'Option 3' },
+            { label: 'Option 3', key: 'option_3' },
           ],
         }}
       />
@@ -73,7 +73,7 @@ Further examples can be found in [./examples/src](https://github.com/adammcarth/
 
 | Prop                         | Description                                                                    | Default     |
 |------------------------------|--------------------------------------------------------------------------------|-------------|
-| `options`                    | Data to be populated into the picklists. `{columnId: [{label: ''}, ...], ...}` |             |
+| `options`                    | Data to be populated into the picklists. `{columnId: [{label: '', key: ''}, ...], ...}` |             |
 | `visible`                    | Not used by default. Set to `true` or `false` to manually handle visibility.   | `null`      |
 | `defaultSelections`          | Eg: `{columnId: 'label string to auto-select', ...}`                           | `{}`        |
 | `confirmText`                | Text displayed in the top right hand corner.                                   | `'Done'`    |
