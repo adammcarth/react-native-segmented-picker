@@ -1,6 +1,6 @@
 {
   "name": "react-native-segmented-picker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A segmentable dropdown picker wheel with no native dependencies.",
   "main": "index.js",
   "scripts": {
