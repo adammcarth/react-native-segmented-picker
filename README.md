@@ -204,4 +204,4 @@ This is an open source project. Bug fixes, improvements and the addition of usef
 5. Ask yourself if there's a *new* unit test that you could write to capture your changes?
 6. Submit a pull request to `master` outlining what your change is and how you tested it.
 
-Made with love in Melbourne [Adam McArthur](https://github.com/adammcarth).
+Made with love in Melbourne by [Adam McArthur](https://github.com/adammcarth).
