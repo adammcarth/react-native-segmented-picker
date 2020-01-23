@@ -131,6 +131,68 @@ Programmatically select an array index from a list column while the component is
 
 Returns the current selected items as they appear in the UI. This is the same method that's used internally when the `onCancel` and `onConfirm` events are fired.
 
+## Recipes
+
+This section contains some code examples of common requirements and frequently asked questions.
+
+### 1. Dynamically Changing Columns
+
+A common use case is to have one of your columns change it's list options based off the selection in another column. In other words, implementing `Column B` as a function of `Column A`. The below example shows one possible way to achieve this using the `onValueChange()` event.
+
+```js
+import React, { Component } from 'react';
+import SegmentedPicker from 'react-native-segmented-picker';
+
+const options = {
+  categories: [{ label: 'Fruits' }, { label: 'Vegetables' }],
+  items: {
+    Fruits: [{ label: 'Apples' }, { label: 'Oranges' }],
+    Vegetables: [{ label: 'Carrots' }, { label: 'Potatoes' }],
+  },
+};
+
+class Demo extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selections: {
+        categories: options.categories[0],
+        items: undefined,
+      },
+    };
+  }
+
+  onValueChange = (columnId, { label }) => {
+    this.setState((prevState) => ({
+      selections: {
+        ...prevState.selections,
+        [columnId]: label,
+      },
+    }));
+  };
+
+  generateOptions = () => {
+    const { categories, items } = options;
+    const { selections } = this.state;
+    return {
+      categories,
+      items: items[selections.categories],
+    };
+  };
+
+  render() {
+    const { selections: { categories, items } } = this.state;
+    return (
+      <SegmentedPicker
+        options={this.generateOptions()}
+        onValueChange={this.onValueChange}
+        defaultSelections={{ categories, items }}
+      />
+    );
+  }
+}
+```
+
 ## Contributions
 
 This is an open source project. Bug fixes, improvements and the addition of useful new features to this package are greatly appreciated.
