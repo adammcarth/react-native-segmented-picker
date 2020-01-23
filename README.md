@@ -77,7 +77,7 @@ Further examples can be found in [./examples/src](https://github.com/adammcarth/
 | `visible`                    | Not used by default. Set to `true` or `false` to manually handle visibility.   | `null`      |
 | `defaultSelections`          | Eg: `{columnId: 'label string to auto-select', ...}`                           | `{}`        |
 | `confirmText`                | Text displayed in the top right hand corner.                                   | `'Done'`    |
-| `size`                       | Fixed percentage of the screen to render the picklist container over.          | `40`        |
+| `size`                       | Fixed percentage of the screen to render the picklist container over.          | `45`        |
 | `confirmTextColor`           | Color of the `confirmText` button.                                             | `'#0A84FF'` |
 | `toolbarBackground`          | Background color of the top container where the `confirmText` is displayed.    | `'#FAFAF8'` |
 | `toolbarBorderColor`         | Bottom border color of the `toolbarContainer`.                                 | `'#E7E7E7'` |
