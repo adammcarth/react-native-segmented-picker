@@ -5,7 +5,7 @@ import * as Animatable from 'react-native-animatable';
 
 export const GUTTER_WIDTH = 18;
 export const GUTTER_HEIGHT = 5;
-export const ITEM_HEIGHT = 40;
+export const ITEM_HEIGHT = 50;
 export const TEXT_CORRECTION = 2;
 
 export const ModalContainer = styled(Animatable.View)`

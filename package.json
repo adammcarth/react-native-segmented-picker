@@ -50,7 +50,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^1.7.0",
-    "jest": "^24.9.0",
+    "jest": "25.5.4",
     "metro-react-native-babel-preset": "^0.56.0",
     "react": "^16.10.2",
     "react-native": "^0.61.2",
