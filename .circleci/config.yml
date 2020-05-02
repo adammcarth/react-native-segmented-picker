@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build_and_test:
     docker:
-      - image: circleci/node:8.10.0
+      - image: circleci/node:stretch
     steps:
       - checkout
       - restore_cache:
