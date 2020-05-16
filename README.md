@@ -1,6 +1,5 @@
 # React Native Segmented Picker
 
-[![CircleCI](https://circleci.com/gh/adammcarth/react-native-segmented-picker.svg?style=svg)](https://circleci.com/gh/adammcarth/react-native-segmented-picker)
 [![NPM Version](https://img.shields.io/npm/v/react-native-segmented-picker.svg?style=flat-square)](https://www.npmjs.com/package/react-native-segmented-picker)
 [![MIT Licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
