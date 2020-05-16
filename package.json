@@ -15,6 +15,9 @@
     },
     "transformIgnorePatterns": [
       "node_modules/(?!react-native|!react-navigation|!static-container)"
+    ],
+    "setupFiles": [
+      "./__mocks__/init.js"
     ]
   },
   "repository": {
