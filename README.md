@@ -1,6 +1,6 @@
 # React Native Segmented Picker
 
-![Syntax & Unit Tests](https://github.com/adammcarth/react-native-segmented-picker/workflows/Syntax%20&%20Unit%20Tests/badge.svg)
+[![Syntax & Unit Tests](https://github.com/adammcarth/react-native-segmented-picker/workflows/Syntax%20&%20Unit%20Tests/badge.svg)](https://github.com/adammcarth/react-native-segmented-picker/actions?query=workflow%3A%22Syntax+%26+Unit+Tests%22)
 [![NPM Version](https://img.shields.io/npm/v/react-native-segmented-picker.svg?style=flat-square)](https://www.npmjs.com/package/react-native-segmented-picker)
 [![MIT Licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
