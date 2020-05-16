@@ -16,6 +16,7 @@ import styles, { GUTTER_HEIGHT, ITEM_HEIGHT } from './SegmentedPickerStyles';
 import Cache from '../../services/Cache';
 import { PickerItem, PickerOptions, Selections } from '../../config/interfaces';
 import {
+  ANIMATION_TIME,
   FLAT_LIST_REF,
   LAST_SCROLL_OFFSET,
   SCROLL_DIRECTION,
@@ -56,7 +57,6 @@ export default class SegmentedPicker extends Component<Props, State> {
   static defaultProps = defaultProps as Partial<Props>;
 
   cache: Cache = new Cache(); // Used as an internal synchronous state (fast)
-  animationTime: number = 300;
   selectionChanges: Selections = {};
   modalContainerRef: React.RefObject<any> = React.createRef();
   pickerContainerRef: React.RefObject<any> = React.createRef();
@@ -72,10 +72,16 @@ export default class SegmentedPicker extends Component<Props, State> {
     }
   }
 
+  /**
+   * Animates in-and-out when toggling picker visibility with the `visible` prop.
+   */
   componentDidUpdate(prevProps: Props): void {
-    const { visible } = this.props;
-    if (prevProps.visible !== visible && visible === false) {
-      // Animate out before closing the picker.
+    const { visible: visibleProp } = this.props;
+    const { visible: visibleState } = this.state;
+    if (visibleProp === true && prevProps.visible !== true && visibleState !== true) {
+      this.show();
+    }
+    if (visibleProp === false && prevProps.visible === true) {
       this.hide();
     }
   }
@@ -95,10 +101,14 @@ export default class SegmentedPicker extends Component<Props, State> {
    * @return {Promise<void>}
    */
   hide = async (): Promise<void> => {
-    this.modalContainerRef.current.fadeOut(this.animationTime);
-    await this.pickerContainerRef.current.fadeOut(this.animationTime);
-    this.setState({ visible: false });
-    this.cache.set(IS_DIRTY, false);
+    if (Platform.OS === 'ios') {
+      this.setState({ visible: false });
+    } else {
+      this.modalContainerRef.current.fadeOut(ANIMATION_TIME);
+      await this.pickerContainerRef.current.fadeOut(ANIMATION_TIME);
+      this.setState({ visible: false });
+      this.cache.set(IS_DIRTY, false);
+    }
   };
 
   /**
@@ -183,24 +193,6 @@ export default class SegmentedPicker extends Component<Props, State> {
         [column]: options[column][index],
       };
     }, {});
-  };
-
-  /**
-   * @private
-   * Determines if the segmented picker should be currently showing. The `visible` prop
-   * is given priority over the internal state. If you choose to control the visibility
-   * of this component using the `visible` prop, you will also have to ensure that your
-   * external state updates based on the `onCancel` and `onConfirm` exit events. This
-   * is only recommended if you have a very good reason to use redux (or similar) as
-   * the method for controlling the visibility of this component. It is otherwise
-   * suggested that you simply use the `show()` method to initially display the picker
-   * and then allow the hide events to be automatically controlled.
-   * @return {boolean}
-   */
-  private isVisible = (): boolean => {
-    const { visible: visibleProp } = this.props;
-    const { visible: visibleState } = this.state;
-    return visibleProp === true || visibleState;
   };
 
   /**
@@ -461,6 +453,7 @@ export default class SegmentedPicker extends Component<Props, State> {
   };
 
   render() {
+    const { visible } = this.state;
     const {
       options,
       size,
@@ -475,8 +468,11 @@ export default class SegmentedPicker extends Component<Props, State> {
 
     return (
       <Modal
-        visible={this.isVisible()}
-        animationType="none"
+        visible={visible}
+        animationType={Platform.select({
+          ios: 'fade',
+          default: 'none',
+        })}
         transparent
         onRequestClose={this.onCancel}
       >
@@ -484,7 +480,7 @@ export default class SegmentedPicker extends Component<Props, State> {
           useNativeDriver
           animation="fadeIn"
           easing="ease-out-cubic"
-          duration={this.animationTime}
+          duration={ANIMATION_TIME}
           ref={this.modalContainerRef}
           style={styles.modalContainer}
         >
@@ -496,7 +492,7 @@ export default class SegmentedPicker extends Component<Props, State> {
             useNativeDriver
             animation="slideInUp"
             easing="ease-in-out-cubic"
-            duration={this.animationTime}
+            duration={ANIMATION_TIME}
             ref={this.pickerContainerRef}
             style={[
               styles.pickerContainer,
