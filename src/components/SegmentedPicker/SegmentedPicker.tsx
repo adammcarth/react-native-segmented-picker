@@ -104,12 +104,15 @@ export default class SegmentedPicker extends Component<Props, State> {
    */
   hide = async (): Promise<void> => {
     if (Platform.OS === 'ios') {
-      this.setState({ visible: false });
+      this.setState({ visible: false }, () => {
+        this.cache.purge();
+      });
     } else {
       this.modalContainerRef.current.fadeOut(ANIMATION_TIME);
       await this.pickerContainerRef.current.fadeOut(ANIMATION_TIME);
-      this.setState({ visible: false });
-      this.cache.set(IS_DIRTY, false);
+      this.setState({ visible: false }, () => {
+        this.cache.purge();
+      });
     }
   };
 
