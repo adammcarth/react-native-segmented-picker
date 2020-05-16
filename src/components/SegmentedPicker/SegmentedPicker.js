@@ -5,9 +5,15 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   FlatList,
+  View,
+  Text,
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import PropTypes from 'prop-types';
-import UI from './Styles';
+import styles, {
+  GUTTER_HEIGHT,
+  ITEM_HEIGHT,
+} from './SegmentedPickerStyles';
 
 class SegmentedPicker extends Component {
   constructor(props) {
@@ -218,9 +224,7 @@ class SegmentedPicker extends Component {
    */
   _pickersVerticalPadding = () => {
     const { pickersHeight } = this.state;
-    return (
-      pickersHeight - UI.consts.ITEM_HEIGHT - (UI.consts.GUTTER_HEIGHT * 2)
-    ) / 2;
+    return (pickersHeight - ITEM_HEIGHT - (GUTTER_HEIGHT * 2)) / 2;
   };
 
   /**
@@ -237,9 +241,9 @@ class SegmentedPicker extends Component {
     const scrollDirection = this[`scrollDirection_${column}`]; // 0 = Up, 1 = Down
     const rounding = (scrollDirection === 0) ? 'floor' : 'ceil';
     const adjustedOffsetY = (scrollDirection === 0) ? (
-      (offsetY / UI.consts.ITEM_HEIGHT) + 0.35
+      (offsetY / ITEM_HEIGHT) + 0.35
     ) : (
-      (offsetY / UI.consts.ITEM_HEIGHT) - 0.35
+      (offsetY / ITEM_HEIGHT) - 0.35
     );
     let nearestArrayMember = Math[rounding](adjustedOffsetY) || 0;
     // Safety checks making sure we don't return an out of range index
@@ -373,16 +377,16 @@ class SegmentedPicker extends Component {
   _renderPickerItem = ({ item: { label, column }, index }) => {
     const { listItemTextColor } = this.props;
     return (
-      <UI.PickerItem>
+      <View style={styles.pickerItem}>
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={() => this.selectIndex(index, column)}
         >
-          <UI.PickerItemText style={{ color: listItemTextColor }}>
+          <Text style={[styles.pickerItemText, { color: listItemTextColor }]}>
             {label}
-          </UI.PickerItemText>
+          </Text>
         </TouchableOpacity>
-      </UI.PickerItem>
+      </View>
     );
   }
 
@@ -406,62 +410,78 @@ class SegmentedPicker extends Component {
         transparent
         onRequestClose={this._onCancel}
       >
-        <UI.ModalContainer
+        <Animatable.View
           useNativeDriver
           animation="fadeIn"
           easing="ease-out-cubic"
           duration={this.animationTime}
           ref={this.modalContainerRef}
+          style={styles.modalContainer}
         >
           <TouchableWithoutFeedback onPress={this._onCancel}>
-            <UI.CloseableContainer style={{ height: `${(100 - size)}%` }} />
+            <View style={[styles.closeableContainer, { height: `${(100 - size)}%` }]} />
           </TouchableWithoutFeedback>
 
-          <UI.PickerContainer
+          <Animatable.View
             useNativeDriver
             animation="slideInUp"
             easing="ease-in-out-cubic"
             duration={this.animationTime}
             ref={this.pickerContainerRef}
-            style={{
-              height: `${size}%`,
-              backgroundColor: containerBackground,
-            }}
+            style={[
+              styles.pickerContainer,
+              {
+                height: `${size}%`,
+                backgroundColor: containerBackground,
+              },
+            ]}
           >
-            <UI.ToolbarContainer
-              style={{
-                backgroundColor: toolbarBackground,
-                borderBottomColor: toolbarBorderColor,
-              }}
+            <View
+              style={[
+                styles.toolbarContainer,
+                {
+                  backgroundColor: toolbarBackground,
+                  borderBottomColor: toolbarBorderColor,
+                },
+              ]}
             >
               <TouchableOpacity
                 activeOpacity={0.4}
                 onPress={this._onConfirm}
               >
-                <UI.ToolbarConfirmContainer>
-                  <UI.ToolbarConfirmText style={{ color: confirmTextColor }}>
+                <View style={styles.toolbarConfirmContainer}>
+                  <Text style={[styles.toolbarConfirmText, { color: confirmTextColor }]}>
                     {confirmText}
-                  </UI.ToolbarConfirmText>
-                </UI.ToolbarConfirmContainer>
+                  </Text>
+                </View>
               </TouchableOpacity>
-            </UI.ToolbarContainer>
+            </View>
 
-            <UI.Pickers onLayout={this._measurePickersHeight}>
+            <View style={styles.pickers} onLayout={this._measurePickersHeight}>
               {Object.keys(options).map(column => (
-                <UI.PickerColumn key={`column_${column}`}>
-                  <UI.SelectionMarkerContainer>
-                    <UI.SelectionMarkerBorder
-                      style={{ backgroundColor: selectionMarkerBorderColor }}
+                <View style={styles.pickerColumn} key={`column_${column}`}>
+                  <View style={styles.selectionMarkerContainer}>
+                    <View
+                      style={[
+                        styles.selectionMarkerBorder,
+                        { backgroundColor: selectionMarkerBorderColor },
+                      ]}
                     />
-                    <UI.SelectionMarker
-                      style={{ backgroundColor: selectionMarkerBackground }}
+                    <View
+                      style={[
+                        styles.selectionMarker,
+                        { backgroundColor: selectionMarkerBackground },
+                      ]}
                     />
-                    <UI.SelectionMarkerBorder
-                      style={{ backgroundColor: selectionMarkerBorderColor }}
+                    <View
+                      style={[
+                        styles.selectionMarkerBorder,
+                        { backgroundColor: selectionMarkerBorderColor },
+                      ]}
                     />
-                  </UI.SelectionMarkerContainer>
+                  </View>
 
-                  <UI.PickerList>
+                  <View style={styles.pickerList}>
                     <FlatList
                       data={options[column].map(({ label, key }) => ({
                         label,
@@ -473,8 +493,8 @@ class SegmentedPicker extends Component {
                       initialNumToRender={40}
                       getItemLayout={(data, index) => (
                         {
-                          length: UI.consts.ITEM_HEIGHT,
-                          offset: UI.consts.ITEM_HEIGHT * index,
+                          length: ITEM_HEIGHT,
+                          offset: ITEM_HEIGHT * index,
                           index,
                         }
                       )}
@@ -491,12 +511,12 @@ class SegmentedPicker extends Component {
                       onMomentumScrollEnd={event => this._onMomentumScrollEnd(event, column)}
                       scrollEventThrottle={32}
                     />
-                  </UI.PickerList>
-                </UI.PickerColumn>
+                  </View>
+                </View>
               ))}
-            </UI.Pickers>
-          </UI.PickerContainer>
-        </UI.ModalContainer>
+            </View>
+          </Animatable.View>
+        </Animatable.View>
       </Modal>
     );
   }
