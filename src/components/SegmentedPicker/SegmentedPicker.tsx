@@ -12,11 +12,13 @@ import {
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { defaultProps, propTypes } from './SegmentedPickerPropTypes';
-import styles, { GUTTER_HEIGHT, ITEM_HEIGHT } from './SegmentedPickerStyles';
+import styles from './SegmentedPickerStyles';
 import Cache from '../../services/Cache';
 import { PickerItem, PickerOptions, Selections } from '../../config/interfaces';
 import {
   ANIMATION_TIME,
+  GUTTER_HEIGHT,
+  ITEM_HEIGHT,
   FLAT_LIST_REF,
   LAST_SCROLL_OFFSET,
   SCROLL_DIRECTION,
@@ -102,12 +104,15 @@ export default class SegmentedPicker extends Component<Props, State> {
    */
   hide = async (): Promise<void> => {
     if (Platform.OS === 'ios') {
-      this.setState({ visible: false });
+      this.setState({ visible: false }, () => {
+        this.cache.purge();
+      });
     } else {
       this.modalContainerRef.current.fadeOut(ANIMATION_TIME);
       await this.pickerContainerRef.current.fadeOut(ANIMATION_TIME);
-      this.setState({ visible: false });
-      this.cache.set(IS_DIRTY, false);
+      this.setState({ visible: false }, () => {
+        this.cache.purge();
+      });
     }
   };
 
