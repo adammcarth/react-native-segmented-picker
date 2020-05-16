@@ -18,7 +18,7 @@ describe('SegmentedPicker', () => {
   });
 
   it('Toggles visibility via ref method.', () => {
-    const ref = React.createRef();
+    const ref: React.RefObject<SegmentedPicker> = React.createRef();
     renderer.create(
       <SegmentedPicker
         options={{ column1: [] }}
@@ -109,7 +109,7 @@ describe('SegmentedPicker', () => {
   });
 
   it('Can be shown and hidden programmatically.', () => {
-    const ref = React.createRef();
+    const ref: React.RefObject<SegmentedPicker> = React.createRef();
     renderer.create(
       <SegmentedPicker
         ref={ref}
@@ -130,7 +130,7 @@ describe('SegmentedPicker', () => {
   });
 
   it('Can switch selected items by label name.', () => {
-    const ref = React.createRef();
+    const ref: React.RefObject<SegmentedPicker> = React.createRef();
     renderer.create(
       <SegmentedPicker
         ref={ref}
@@ -149,7 +149,7 @@ describe('SegmentedPicker', () => {
   });
 
   it('Can switch selected items by list index.', () => {
-    const ref = React.createRef();
+    const ref: React.RefObject<SegmentedPicker> = React.createRef();
     renderer.create(
       <SegmentedPicker
         ref={ref}
@@ -168,7 +168,7 @@ describe('SegmentedPicker', () => {
   });
 
   it('Omits expected onValueChange events.', () => {
-    const ref = React.createRef();
+    const ref: React.RefObject<SegmentedPicker> = React.createRef();
     const onChangeCallback = jest.fn();
     renderer.create(
       <SegmentedPicker
