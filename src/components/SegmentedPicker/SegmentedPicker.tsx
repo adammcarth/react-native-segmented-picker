@@ -21,7 +21,7 @@ import {
   SCROLL_DIRECTION,
   IS_DRAGGING,
   IS_MOMENTUM_SCROLLING,
-  // IS_DIRTY,
+  IS_DIRTY,
 } from '../../config/constants';
 
 export interface Props {
@@ -49,7 +49,6 @@ export interface Props {
 interface State {
   visible: boolean;
   pickersHeight: number;
-  dirty: boolean;
 }
 
 export default class SegmentedPicker extends Component<Props, State> {
@@ -67,7 +66,6 @@ export default class SegmentedPicker extends Component<Props, State> {
     this.state = {
       visible: false,
       pickersHeight: 0,
-      dirty: false,
     };
     if (!props.options) {
       throw new Error('<SegmentedPicker /> cannot render without the `options` prop.');
@@ -99,7 +97,8 @@ export default class SegmentedPicker extends Component<Props, State> {
   hide = async (): Promise<void> => {
     this.modalContainerRef.current.fadeOut(this.animationTime);
     await this.pickerContainerRef.current.fadeOut(this.animationTime);
-    this.setState({ visible: false, dirty: false });
+    this.setState({ visible: false });
+    this.cache.set(IS_DIRTY, false);
   };
 
   /**
@@ -224,7 +223,7 @@ export default class SegmentedPicker extends Component<Props, State> {
    */
   private setDefaultSelections = (): void => {
     const { options, defaultSelections } = this.props;
-    const { dirty } = this.state;
+    const dirty = this.cache.get(IS_DIRTY);
     if (!dirty) {
       // User defined default selections
       Object.keys(defaultSelections)
@@ -337,9 +336,9 @@ export default class SegmentedPicker extends Component<Props, State> {
    */
   private onScrollBeginDrag = (column: string): void => {
     this.cache.set(`${IS_DRAGGING}${column}`, true);
-    const { dirty } = this.state;
+    const dirty = this.cache.get(IS_DIRTY);
     if (!dirty) {
-      this.setState({ dirty: true });
+      this.cache.set(IS_DIRTY, true);
     }
   };
 
