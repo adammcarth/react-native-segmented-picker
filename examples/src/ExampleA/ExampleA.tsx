@@ -1,11 +1,23 @@
 import React, { Component } from 'react';
 import { View, Alert } from 'react-native';
-import SegmentedPicker from 'react-native-segmented-picker';
-import PropTypes from 'prop-types';
+import SegmentedPicker, {
+  PickerOptions,
+} from 'react-native-segmented-picker';
 import Button from '../Button';
 import { generateOptions } from '../utils';
 
-class ExampleA extends Component {
+interface Props {
+  columns: number;
+}
+
+interface State {
+  options: PickerOptions;
+  selections: { [column: string]: string };
+}
+
+class ExampleA extends Component<Props, State> {
+  segmentedPicker: React.RefObject<SegmentedPicker> = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {
@@ -17,12 +29,11 @@ class ExampleA extends Component {
         }), {}),
       selections: {},
     };
-    this.segmentedPicker = React.createRef();
   }
 
   showPicker = () => {
-    this.segmentedPicker.show();
-  }
+    this.segmentedPicker.current.show();
+  };
 
   onConfirm = (selections) => {
     this.setState({
@@ -43,7 +54,7 @@ class ExampleA extends Component {
         );
       }, 500);
     });
-  }
+  };
 
   render() {
     const { options, selections } = this.state;
@@ -57,7 +68,7 @@ class ExampleA extends Component {
         />
 
         <SegmentedPicker
-          ref={(ref) => { this.segmentedPicker = ref; }}
+          ref={this.segmentedPicker}
           onConfirm={this.onConfirm}
           options={options}
           defaultSelections={selections}
@@ -66,9 +77,5 @@ class ExampleA extends Component {
     );
   }
 }
-
-ExampleA.propTypes = {
-  columns: PropTypes.number.isRequired,
-};
 
 export default ExampleA;

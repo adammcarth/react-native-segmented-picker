@@ -17,6 +17,9 @@
     "react": "16.9.0",
     "react-native": "0.61.2"
   },
+  "peerDependencies": {
+    "react-native-segmented-picker": "1.1.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.6.4",
     "@babel/runtime": "^7.6.3",

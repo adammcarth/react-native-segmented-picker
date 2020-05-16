@@ -4,12 +4,16 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native';
-import PropTypes from 'prop-types';
+
+interface Props {
+  text: string;
+  onPress: () => void;
+}
 
 const Button = ({
   text,
   onPress,
-}) => (
+}: Props) => (
   <View style={{ marginBottom: 30, width: '70%', height: 50 }}>
     <TouchableOpacity onPress={onPress} activeOpacity={0.5} style={{ width: '100%' }}>
       <View
@@ -39,11 +43,6 @@ const Button = ({
 Button.defaultProps = {
   text: '',
   onPress: () => {},
-};
-
-Button.propTypes = {
-  text: PropTypes.string,
-  onPress: PropTypes.func,
 };
 
 export default Button;
