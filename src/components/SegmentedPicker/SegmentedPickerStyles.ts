@@ -1,9 +1,10 @@
 import { StyleSheet } from 'react-native';
-
-export const GUTTER_WIDTH = 18;
-export const GUTTER_HEIGHT = 5;
-export const ITEM_HEIGHT = 50;
-export const TEXT_CORRECTION = 2;
+import {
+  GUTTER_WIDTH,
+  GUTTER_HEIGHT,
+  ITEM_HEIGHT,
+  TEXT_CORRECTION,
+} from '../../config/constants';
 
 export default StyleSheet.create({
   modalContainer: {

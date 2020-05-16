@@ -12,11 +12,13 @@ import {
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { defaultProps, propTypes } from './SegmentedPickerPropTypes';
-import styles, { GUTTER_HEIGHT, ITEM_HEIGHT } from './SegmentedPickerStyles';
+import styles from './SegmentedPickerStyles';
 import Cache from '../../services/Cache';
 import { PickerItem, PickerOptions, Selections } from '../../config/interfaces';
 import {
   ANIMATION_TIME,
+  GUTTER_HEIGHT,
+  ITEM_HEIGHT,
   FLAT_LIST_REF,
   LAST_SCROLL_OFFSET,
   SCROLL_DIRECTION,
