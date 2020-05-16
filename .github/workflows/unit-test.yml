@@ -1,0 +1,57 @@
+name: Syntax & Unit Tests
+
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  lint:
+    name: JavaScript Syntax Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+      - name: Load NodeJS 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Restore Cache (node_modules)
+        uses: actions/cache@v1
+        id: node-modules-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+      - name: Yarn Install
+        run: yarn install
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      - name: Lint Source Code
+        run: yarn lint
+
+  unit-test:
+    name: Unit Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+      - name: Load NodeJS 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Restore Cache (node_modules)
+        uses: actions/cache@v1
+        id: node-modules-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+      - name: Yarn Install
+        run: yarn install
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      - name: Run Unit Tests
+        run: yarn unit-test
