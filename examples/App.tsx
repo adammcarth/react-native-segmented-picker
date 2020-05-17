@@ -1,23 +1,60 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
+import { Selections } from 'react-native-segmented-picker';
 import './src/config/YellowBox';
+import { showSelections } from './src/utils';
 import ExampleA from './src/ExampleA';
+import ExampleB from './src/ExampleB';
 
-const App = () => (
-  <View
-    style={{
-      flex: 1,
-      width: '100%',
-      height: '100%',
-      justifyContent: 'center',
-    }}
-  >
-    <View style={{ width: '100%' }}>
-      <ExampleA columns={1} />
-      <ExampleA columns={2} />
-      <ExampleA columns={3} />
-    </View>
-  </View>
-);
+interface Props {}
 
-export default App;
+interface State {
+  stringifiedSelections: string;
+}
+
+export default class SegmentedPickerDemo extends React.Component<Props, State> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      stringifiedSelections: '{}',
+    };
+  }
+
+  /**
+   * Keeps a log of the latest selection JSON from any of the examples below. This is
+   * required for the E2E tests, where we place this content in a hidden view on the screen.
+   */
+  onConfirm = (selections: Selections) => {
+    this.setState({
+      stringifiedSelections: JSON.stringify(selections),
+    }, () => {
+      showSelections(selections);
+    });
+  };
+
+  render() {
+    return (
+      <View
+        style={{
+          flex: 1,
+          width: '100%',
+          height: '100%',
+          justifyContent: 'center',
+        }}
+      >
+        <View style={{ width: '100%' }}>
+          <ExampleA columns={1} onConfirm={this.onConfirm} />
+          <ExampleA columns={2} onConfirm={this.onConfirm} />
+          <ExampleA columns={3} onConfirm={this.onConfirm} />
+          <ExampleB columns={1} onConfirm={this.onConfirm} />
+        </View>
+
+        <View style={{ position: 'absolute', bottom: 0, left: 0 }}>
+          <Text style={{ fontSize: 8, color: '#FFFFFF' }} testID="SEGMENTED_PICKER_SELECTIONS">
+            {encodeURIComponent(this.state.stringifiedSelections)}
+          </Text>
+        </View>
+      </View>
+    );
+  }
+}

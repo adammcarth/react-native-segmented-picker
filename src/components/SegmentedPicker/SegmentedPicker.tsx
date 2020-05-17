@@ -18,14 +18,21 @@ import { PickerItem, PickerOptions, Selections } from '../../config/interfaces';
 import {
   ANIMATION_TIME,
   GUTTER_HEIGHT,
-  ITEM_HEIGHT,
+  ITEM_HEIGHTS,
+  TEST_IDS,
+  TRACKING,
+} from '../../config/constants';
+
+const ITEM_HEIGHT = Platform.select(ITEM_HEIGHTS);
+
+const {
   FLAT_LIST_REF,
   LAST_SCROLL_OFFSET,
   SCROLL_DIRECTION,
   IS_DRAGGING,
   IS_MOMENTUM_SCROLLING,
   IS_DIRTY,
-} from '../../config/constants';
+} = TRACKING;
 
 export interface Props {
   options: PickerOptions;
@@ -52,6 +59,11 @@ export interface Props {
 interface State {
   visible: boolean;
   pickersHeight: number;
+}
+
+interface RenderablePickerItem extends PickerItem {
+  key: string;
+  column: string;
 }
 
 export default class SegmentedPicker extends Component<Props, State> {
@@ -439,15 +451,25 @@ export default class SegmentedPicker extends Component<Props, State> {
    * Used by the FlatList to render picklist items.
    * @return {ReactElement}
    */
-  private renderPickerItem = (
-    { item: { label, column }, index }: { item: { label: string, column: string }, index: number },
-  ): ReactElement => {
+  private renderPickerItem = ({
+    item: {
+      label,
+      column,
+      key,
+      testID,
+    },
+    index,
+  }: {
+    item: RenderablePickerItem;
+    index: number;
+  }): ReactElement => {
     const { listItemTextColor } = this.props;
     return (
       <View style={styles.pickerItem}>
         <TouchableOpacity
           activeOpacity={0.7}
           onPress={() => this.selectIndex(index, column)}
+          testID={testID || key}
         >
           <Text style={[styles.pickerItemText, { color: listItemTextColor }]}>
             {label}
@@ -488,8 +510,9 @@ export default class SegmentedPicker extends Component<Props, State> {
           duration={ANIMATION_TIME}
           ref={this.modalContainerRef}
           style={styles.modalContainer}
+          testID={TEST_IDS.PICKER}
         >
-          <TouchableWithoutFeedback onPress={this.onCancel}>
+          <TouchableWithoutFeedback onPress={this.onCancel} testID={TEST_IDS.CLOSE_AREA}>
             <View style={[styles.closeableContainer, { height: `${(100 - size)}%` }]} />
           </TouchableWithoutFeedback>
 
@@ -519,6 +542,7 @@ export default class SegmentedPicker extends Component<Props, State> {
               <TouchableOpacity
                 activeOpacity={0.4}
                 onPress={this.onConfirm}
+                testID={TEST_IDS.CONFIRM_BUTTON}
               >
                 <View style={styles.toolbarConfirmContainer}>
                   <Text style={[styles.toolbarConfirmText, { color: confirmTextColor }]}>
@@ -530,7 +554,7 @@ export default class SegmentedPicker extends Component<Props, State> {
 
             <View style={styles.pickers} onLayout={this.measurePickersHeight}>
               {Object.keys(options).map(column => (
-                <View style={styles.pickerColumn} key={`column_${column}`}>
+                <View style={styles.pickerColumn} key={`${TEST_IDS.COLUMN}${column}`}>
                   <View style={styles.selectionMarkerContainer}>
                     <View
                       style={[
@@ -554,13 +578,14 @@ export default class SegmentedPicker extends Component<Props, State> {
 
                   <View style={styles.pickerList}>
                     <FlatList
-                      data={options[column].map(({ label, key }) => ({
+                      data={options[column].map(({ label, key, testID }) => ({
                         label,
-                        key,
                         column,
+                        testID,
+                        key: `${TEST_IDS.COLUMN}${column}_${key || label}`,
                       }))}
                       renderItem={this.renderPickerItem}
-                      keyExtractor={item => `${column}_${item.key || item.label}`}
+                      keyExtractor={item => item.key}
                       initialNumToRender={40}
                       getItemLayout={(data, index) => (
                         {
@@ -581,6 +606,7 @@ export default class SegmentedPicker extends Component<Props, State> {
                       onMomentumScrollBegin={event => this.onMomentumScrollBegin(event, column)}
                       onMomentumScrollEnd={event => this.onMomentumScrollEnd(event, column)}
                       scrollEventThrottle={32}
+                      testID={`${TEST_IDS.COLUMN}${column}`}
                     />
                   </View>
                 </View>

@@ -2,6 +2,7 @@ import React from 'react';
 import { FlatList } from 'react-native';
 import renderer from 'react-test-renderer';
 import SegmentedPicker from './SegmentedPicker';
+import { TEST_IDS } from '../../config/constants';
 
 beforeEach(() => {
   jest.useFakeTimers();
@@ -103,9 +104,9 @@ describe('SegmentedPicker', () => {
       props: { data, keyExtractor: listItemKeyExtractor },
     } = testInstance.findByType(FlatList);
     expect(listItemKeyExtractor(data[0]))
-      .toBe(`${column1}_${listData[column1][0].label}`);
+      .toBe(`${TEST_IDS.COLUMN}${column1}_${listData[column1][0].label}`);
     expect(listItemKeyExtractor(data[1]))
-      .toBe(`${column1}_${listData[column1][1].key}`);
+      .toBe(`${TEST_IDS.COLUMN}${column1}_${listData[column1][1].key}`);
   });
 
   it('Can be shown and hidden programmatically.', () => {

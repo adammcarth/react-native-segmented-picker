@@ -2683,6 +2683,11 @@ detect-newline@^3.0.0:
   resolved "https://registry.yarnpkg.com/detect-newline/-/detect-newline-3.1.0.tgz#576f5dfc63ae1a192ff192d8ad3af6308991b651"
   integrity sha512-TLz+x/vEXm/Y7P7wn1EJFNLxYpUD4TgMosxY6fAVJUnJMbupHBOncxyWUG9OpTaH9EBD7uFI5LfEgmMOc54DsA==
 
+detox-getprops@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/detox-getprops/-/detox-getprops-0.1.1.tgz#ebb1af60ed61471d6c8e54e990fcbdb5d6ec97e8"
+  integrity sha512-v5qYAsu8yQV+agfkIQUf+NDfgj4kGy+ClNC5nUyLOJG/ml0h2iNZLcT60GPjJrQ6udg+qGhFcxNgpNCpGPdsUw==
+
 detox@^16.5.0:
   version "16.5.0"
   resolved "https://registry.yarnpkg.com/detox/-/detox-16.5.0.tgz#81cd560de917fca9e6ecd10cfd68c1831e896da4"

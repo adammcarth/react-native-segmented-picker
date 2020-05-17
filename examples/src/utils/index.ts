@@ -1,3 +1,5 @@
+export * from './showSelections';
+
 export const generateOptions = (numOptions: number, startNum: number = 1): Array<{
   label: string;
 }> => {
@@ -8,8 +10,4 @@ export const generateOptions = (numOptions: number, startNum: number = 1): Array
     });
   }
   return options;
-};
-
-export default {
-  generateOptions,
 };

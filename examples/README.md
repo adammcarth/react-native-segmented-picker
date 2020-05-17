@@ -2,8 +2,9 @@
 
 This folder contains a barebones React Native project with some examples of the segmented picker in action. Code examples are located in the `src` folder.
 
-- `src/Example1`: Very simple example of the component being used.
-- `src/Example2`: Example of updating list data based off a user's selection.
+- `src/ExampleA`: Very simple example of the component being used with 1, 2 and 3 columns.
+- `src/ExampleB`: Example of using the `visible` prop to control picker visibility.
+- `src/ExampleC`: TO DO! An example of changing list items based on selections.
 
 ## Installation & Setup
 
