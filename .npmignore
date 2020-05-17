@@ -6,6 +6,7 @@ yarn.lock
 package-lock.json
 examples
 __mocks__
+__tests__
 .github
 .prettierrc.js
 .eslintrc

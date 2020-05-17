@@ -65,6 +65,7 @@ class ExampleA extends Component<Props, State> {
         <Button
           text={`Example A (${columns} Col)`}
           onPress={this.showPicker}
+          testID={`EXAMPLE_A_${columns}_COL`}
         />
 
         <SegmentedPicker

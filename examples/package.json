@@ -3,10 +3,16 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "postinstall": "cd ../ && yarn build-into-examples",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
-    "test": "eslint ./"
+    "test": "eslint ./",
+    "start-e2e-debug-packager": "RN_BUNDLE_TYPE=E2E E2E_MODE=debug yarn start",
+    "e2e-android-debug-init": "cd ../ && yarn detox build -c android.debug",
+    "e2e-android-debug": "E2E_MODE=debug cd ../ && yarn detox test -c android.debug --take-screenshots failing --record-logs failing -n \"$(adb devices | sed -n '2 p' | grep -o '^\\([a-zA-Z0-9]\\|-\\|_\\)\\+')\" ./__tests__/*.spec.js",
+    "e2e-ios-debug-init": "cd ../ && yarn detox build -c ios.sim.debug",
+    "e2e-ios-debug": "E2E_MODE=debug cd ../ && yarn detox test -c ios.sim.debug --take-screenshots failing --record-logs failing ./__tests__/*.spec.js"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.5.5",

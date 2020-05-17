@@ -8,14 +8,21 @@ import {
 interface Props {
   text: string;
   onPress: () => void;
+  testID?: string;
 }
 
 const Button = ({
   text,
   onPress,
+  testID,
 }: Props) => (
   <View style={{ marginBottom: 30, width: '70%', height: 50 }}>
-    <TouchableOpacity onPress={onPress} activeOpacity={0.5} style={{ width: '100%' }}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.5}
+      style={{ width: '100%' }}
+      testID={testID}
+    >
       <View
         style={{
           width: '100%',

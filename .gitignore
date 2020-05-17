@@ -5,3 +5,4 @@ yarn-error.log
 package-lock.json
 .npmrc
 dist
+__tests__/.artifacts

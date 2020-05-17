@@ -1,11 +1,7 @@
 import React from 'react';
-import { YellowBox, View } from 'react-native';
+import { View } from 'react-native';
+import './src/config/YellowBox';
 import ExampleA from './src/ExampleA';
-
-YellowBox.ignoreWarnings([
-  'Remote debugger is in a background tab',
-  'componentWillReceiveProps',
-]);
 
 const App = () => (
   <View

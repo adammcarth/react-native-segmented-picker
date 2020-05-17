@@ -17,9 +17,7 @@ You can run this example project on your local machine to view the demos.
 ```bash
 # CWD: /react-native-segmented-picker
 
-$ rsync -av --exclude 'examples' --exclude 'node_modules' --exclude '.git' ./ ./examples/node_modules/react-native-segmented-picker && cd ./examples/node_modules/react-native-segmented-picker && yarn install --production && cd ../../../
-
-$ yarn build --watch
+$ yarn build-into-examples
 ```
 
 ### Run instructions for iOS:
