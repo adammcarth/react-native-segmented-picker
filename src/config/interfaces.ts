@@ -1,5 +1,6 @@
 export interface PickerItem {
   label: string;
+  key?: string;
   [x: string]: any;
 }
 
