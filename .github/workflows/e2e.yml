@@ -38,10 +38,10 @@ jobs:
       - name: Yarn Install (examples)
         run: cd examples && yarn install
         if: steps.node-modules-examples-cache.outputs.cache-hit != 'true'
-      - name: Run E2E Tests
-        uses: reactivecircus/android-emulator-runner@v2
       - name: Start React Native Packager (E2E Mode)
         run: cd examples && nohup yarn start-e2e-debug-packager &
+      - name: Run E2E Tests
+        uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
           script: yarn e2e-android
