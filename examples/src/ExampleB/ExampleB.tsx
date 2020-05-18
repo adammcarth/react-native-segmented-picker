@@ -15,11 +15,10 @@ interface Props {
 interface State {
   options: PickerOptions;
   selections: { [column: string]: string };
+  visible: boolean;
 }
 
 class ExampleA extends Component<Props, State> {
-  segmentedPicker: React.RefObject<SegmentedPicker> = React.createRef();
-
   constructor(props) {
     super(props);
     this.state = {
@@ -30,15 +29,21 @@ class ExampleA extends Component<Props, State> {
           [`column${index + 1}`]: generateOptions(25),
         }), {}),
       selections: {},
+      visible: false,
     };
   }
 
   showPicker = () => {
-    this.segmentedPicker.current.show();
+    this.setState({ visible: true });
+  };
+
+  hidePicker = () => {
+    this.setState({ visible: false });
   };
 
   onConfirm = (selections: Selections) => {
     this.setState({
+      visible: false,
       selections: Object.keys(selections)
         .reduce((newDefaults, column) => ({
           ...newDefaults,
@@ -50,20 +55,21 @@ class ExampleA extends Component<Props, State> {
   };
 
   render() {
-    const { options, selections } = this.state;
-    const { columns } = this.props;
+    const { options, selections, visible } = this.state;
 
     return (
       <View style={{ width: '100%', alignItems: 'center' }}>
         <Button
-          text={`Example A (${columns} Col)`}
+          text="Example B (Prop Visibility)"
           onPress={this.showPicker}
-          testID={`EXAMPLE_A_${columns}_COL`}
+          backgroundColor="#25885d"
+          testID="EXAMPLE_B"
         />
 
         <SegmentedPicker
-          ref={this.segmentedPicker}
+          visible={visible}
           onConfirm={this.onConfirm}
+          onCancel={this.hidePicker}
           options={options}
           defaultSelections={selections}
         />

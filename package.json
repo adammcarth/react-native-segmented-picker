@@ -2,29 +2,27 @@
   "name": "react-native-segmented-picker",
   "version": "1.1.0",
   "description": "A segmentable dropdown picker wheel with no native dependencies.",
+  "author": "Adam McArthur",
+  "license": "MIT",
+  "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "lint": "eslint ./ && tsc --project ./tsconfig.json --noEmit --skipLibCheck",
-    "unit-test": "jest ./",
+    "unit-test": "jest --testPathIgnorePatterns __tests__/",
     "test": "yarn lint && yarn unit-test",
-    "build": "rm -rf dist && rollup --config rollup.config.js"
-  },
-  "jest": {
-    "preset": "react-native",
-    "transform": {
-      "^.+\\.jsx?$": "<rootDir>/node_modules/react-native/jest/preprocessor.js"
-    },
-    "transformIgnorePatterns": [
-      "node_modules/(?!react-native|!react-navigation|!static-container)"
-    ],
-    "setupFiles": [
-      "./__mocks__/init.ts"
-    ]
+    "build": "rm -rf dist && rollup --config rollup.config.js",
+    "build-into-examples": "yarn build && rsync -zrv ./ ./examples/node_modules/react-native-segmented-picker --include 'package.json' --include 'yarn.lock' --include 'dist/***' --exclude '*' && cd ./examples/node_modules/react-native-segmented-picker && yarn install --production",
+    "e2e-android": "cd examples && yarn install && yarn e2e-android-debug-init && yarn e2e-android-debug --take-screenshots all --record-logs all",
+    "e2e-ios": "cd examples && yarn install && cd ios && pod install && cd ../ && yarn e2e-ios-debug-init && yarn e2e-ios-debug --take-screenshots all --record-logs all"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/adammcarth/react-native-segmented-picker.git"
+  },
+  "homepage": "https://github.com/adammcarth/react-native-segmented-picker#readme",
+  "bugs": {
+    "url": "https://github.com/adammcarth/react-native-segmented-picker/issues"
   },
   "keywords": [
     "react-native",
@@ -42,13 +40,6 @@
     "segmented picker",
     "segmented dropdown"
   ],
-  "bugs": {
-    "url": "https://github.com/adammcarth/react-native-segmented-picker/issues"
-  },
-  "homepage": "https://github.com/adammcarth/react-native-segmented-picker#readme",
-  "author": "Adam McArthur",
-  "license": "MIT",
-  "private": false,
   "dependencies": {
     "prop-types": ">= 15.0.0",
     "react-native-animatable": "^1.3.0"
@@ -68,8 +59,11 @@
     "@typescript-eslint/eslint-plugin": "2.17.0",
     "@typescript-eslint/parser": "2.12.0",
     "babel-jest": "24.9.0",
+    "detox": "^16.5.0",
+    "detox-getprops": "^0.1.1",
     "eslint": "6.8.0",
     "eslint-config-airbnb-typescript": "6.3.1",
+    "eslint-plugin-detox": "^1.0.0",
     "eslint-plugin-import": "2.20.0",
     "eslint-plugin-jest": "23.8.2",
     "eslint-plugin-jsx-a11y": "6.2.3",
@@ -82,5 +76,43 @@
     "rollup": "^2.10.2",
     "rollup-plugin-typescript2": "^0.27.1",
     "typescript": "3.7.3"
+  },
+  "jest": {
+    "preset": "react-native",
+    "transform": {
+      "^.+\\.jsx?$": "<rootDir>/node_modules/react-native/jest/preprocessor.js"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!react-native|!react-navigation|!static-container)"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/__test__/"
+    ],
+    "setupFiles": [
+      "./__mocks__/init.ts"
+    ]
+  },
+  "detox": {
+    "test-runner": "jest",
+    "runner-config": "./__tests__/config.json",
+    "artifacts": {
+      "rootDir": "./__tests__/.artifacts"
+    },
+    "configurations": {
+      "android.debug": {
+        "binaryPath": "examples/android/app/build/outputs/apk/debug/app-debug.apk",
+        "build": "cd examples/android && RN_BUNDLE_TYPE=E2E E2E_MODE=debug ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug && cd ..",
+        "type": "android.attached"
+      },
+      "ios.sim.debug": {
+        "binaryPath": "examples/ios/build/Build/Products/Debug-iphonesimulator/SegmentedPickerDemo.app",
+        "build": "cd examples && RN_BUNDLE_TYPE=E2E E2E_MODE=debug xcodebuild -workspace ios/SegmentedPickerDemo.xcworkspace -scheme SegmentedPickerDemo -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build",
+        "type": "ios.simulator",
+        "device": {
+          "type": "iPhone SE (2nd generation)"
+        }
+      }
+    }
   }
 }
