@@ -8,7 +8,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "eslint ./",
-    "start-e2e-debug-packager": "RN_BUNDLE_TYPE=E2E E2E_MODE=debug ./node_modules/bin/react-native start",
+    "start-e2e-debug-packager": "RN_BUNDLE_TYPE=E2E E2E_MODE=debug yarn start",
     "e2e-android-debug-init": "cd ../ && yarn detox build -c android.debug",
     "e2e-android-debug": "cd ../ && E2E_MODE=debug E2E_PLATFORM=android yarn detox test -c android.debug --take-screenshots failing --record-logs failing -n \"$(adb devices | sed -n '2 p' | grep -o '^\\([a-zA-Z0-9]\\|-\\|_\\)\\+')\" ./__tests__/*.spec.js",
     "e2e-ios-debug-init": "cd ../ && yarn detox build -c ios.sim.debug",
