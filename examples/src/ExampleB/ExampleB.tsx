@@ -1,11 +1,24 @@
 import React, { Component } from 'react';
-import { View, Alert } from 'react-native';
-import SegmentedPicker from 'react-native-segmented-picker';
-import PropTypes from 'prop-types';
+import { View } from 'react-native';
+import SegmentedPicker, {
+  PickerOptions,
+  Selections,
+} from 'react-native-segmented-picker';
 import Button from '../Button';
 import { generateOptions } from '../utils';
 
-class ExampleA extends Component {
+interface Props {
+  columns: number;
+  onConfirm: (selections: Selections) => void;
+}
+
+interface State {
+  options: PickerOptions;
+  selections: { [column: string]: string };
+  visible: boolean;
+}
+
+class ExampleA extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,49 +29,47 @@ class ExampleA extends Component {
           [`column${index + 1}`]: generateOptions(25),
         }), {}),
       selections: {},
+      visible: false,
     };
-    this.segmentedPicker = React.createRef();
   }
 
   showPicker = () => {
-    this.segmentedPicker.show();
-  }
+    this.setState({ visible: true });
+  };
 
-  onConfirm = (selections) => {
+  hidePicker = () => {
+    this.setState({ visible: false });
+  };
+
+  onConfirm = (selections: Selections) => {
     this.setState({
+      visible: false,
       selections: Object.keys(selections)
         .reduce((newDefaults, column) => ({
           ...newDefaults,
           [column]: selections[column].label,
         }), {}),
     }, () => {
-      setTimeout(() => {
-        Alert.alert(
-          'Selections:',
-          Object.keys(selections)
-            .map(column => (
-              `${column}: '${selections[column].label}'`
-            ))
-            .join(', '),
-        );
-      }, 500);
+      this.props.onConfirm(selections);
     });
-  }
+  };
 
   render() {
-    const { options, selections } = this.state;
-    const { columns } = this.props;
+    const { options, selections, visible } = this.state;
 
     return (
       <View style={{ width: '100%', alignItems: 'center' }}>
         <Button
-          text={`Example A (${columns} Col)`}
+          text="Example B (Prop Visibility)"
           onPress={this.showPicker}
+          backgroundColor="#25885d"
+          testID="EXAMPLE_B"
         />
 
         <SegmentedPicker
-          ref={(ref) => { this.segmentedPicker = ref; }}
+          visible={visible}
           onConfirm={this.onConfirm}
+          onCancel={this.hidePicker}
           options={options}
           defaultSelections={selections}
         />
@@ -66,9 +77,5 @@ class ExampleA extends Component {
     );
   }
 }
-
-ExampleA.propTypes = {
-  columns: PropTypes.number.isRequired,
-};
 
 export default ExampleA;

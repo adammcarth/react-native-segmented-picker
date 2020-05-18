@@ -6,6 +6,12 @@
       {
         "varsIgnorePattern": "React|react-native-segmented-picker"
       }
+    ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "peerDependencies": true
+      }
     ]
   }
 }

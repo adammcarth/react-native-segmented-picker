@@ -1,6 +1,6 @@
 # React Native Segmented Picker
 
-[![CircleCI](https://circleci.com/gh/adammcarth/react-native-segmented-picker.svg?style=svg)](https://circleci.com/gh/adammcarth/react-native-segmented-picker)
+[![Syntax, Unit & E2E Tests](https://github.com/adammcarth/react-native-segmented-picker/workflows/Syntax%2C%20Unit%20%26%20E2E%20Tests/badge.svg)](https://github.com/adammcarth/react-native-segmented-picker/actions?query=workflow%3A%22Syntax%2C%20Unit%20%26%20E2E%20Tests%22)
 [![NPM Version](https://img.shields.io/npm/v/react-native-segmented-picker.svg?style=flat-square)](https://www.npmjs.com/package/react-native-segmented-picker)
 [![MIT Licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
@@ -37,7 +37,7 @@ class Example extends Component {
 
   componentDidMount() {
     // Can alternatively be shown with the `visible` prop for redux etc.
-    this.segmentedPicker.show();
+    this.segmentedPicker.current.show();
   }
 
   onConfirm = (selections) => {
@@ -71,20 +71,20 @@ Further examples can be found in [./examples/src](https://github.com/adammcarth/
 
 ### Props
 
-| Prop                         | Description                                                                    | Default     |
-|------------------------------|--------------------------------------------------------------------------------|-------------|
-| `options`                    | Data to be populated into the picklists. `{columnId: [{label: '', key: ''}, ...], ...}` |             |
-| `visible`                    | Not used by default. Set to `true` or `false` to manually handle visibility.   | `null`      |
-| `defaultSelections`          | Eg: `{columnId: 'label string to auto-select', ...}`                           | `{}`        |
-| `confirmText`                | Text displayed in the top right hand corner.                                   | `'Done'`    |
-| `size`                       | Fixed percentage of the screen to render the picklist container over.          | `45`        |
-| `confirmTextColor`           | Color of the `confirmText` button.                                             | `'#0A84FF'` |
-| `toolbarBackground`          | Background color of the top container where the `confirmText` is displayed.    | `'#FAFAF8'` |
-| `toolbarBorderColor`         | Bottom border color of the `toolbarContainer`.                                 | `'#E7E7E7'` |
-| `listItemTextColor`          | Color of the text for each item in the picklist.                               | `'#282828'` |
-| `selectionMarkerBackground`  | Background color of the container which overlays the current selected item.    | `'#F8F8F8'` |
-| `selectionMarkerBorderColor` | Border color (top and bottom) of the selection marker overlay.                 | `'#DCDCDC'` |
-| `containerBackground`        | Background color of the inner SegmentedPicker container.                       | `'#FFFFFF'` |
+| Prop                         | Description                                                                                           | Default     |
+|------------------------------|-------------------------------------------------------------------------------------------------------|-------------|
+| `options`                    | Data to be populated into the picklists. `{columnId: [{label: '', key?: '', testID?: ''}, ...], ...}` |             |
+| `visible`                    | Not used by default. Set to `true` or `false` to manually handle visibility.                          | `null`      |
+| `defaultSelections`          | Eg: `{columnId: 'label string to auto-select', ...}`                                                  | `{}`        |
+| `confirmText`                | Text displayed in the top right hand corner.                                                          | `'Done'`    |
+| `size`                       | Fixed percentage of the screen to render the picklist container over.                                 | `45`        |
+| `confirmTextColor`           | Color of the `confirmText` button.                                                                    | `'#0A84FF'` |
+| `toolbarBackground`          | Background color of the top container where the `confirmText` is displayed.                           | `'#FAFAF8'` |
+| `toolbarBorderColor`         | Bottom border color of the `toolbarContainer`.                                                        | `'#E7E7E7'` |
+| `listItemTextColor`          | Color of the text for each item in the picklist.                                                      | `'#282828'` |
+| `selectionMarkerBackground`  | Background color of the container which overlays the current selected item.                           | `'#F8F8F8'` |
+| `selectionMarkerBorderColor` | Border color (top and bottom) of the selection marker overlay.                                        | `'#DCDCDC'` |
+| `containerBackground`        | Background color of the inner SegmentedPicker container.                                              | `'#FFFFFF'` |
 
 ### Event Props
 
@@ -193,6 +193,22 @@ class Demo extends Component {
 }
 ```
 
+### 2. End-To-End (E2E) Testing
+
+This library automatically sets `testID` attributes on elements so that you can interact with the picker UI during E2E testing (with tools such as [Detox](https://github.com/wix/Detox)).
+
+```js
+import { TEST_IDS } from 'react-native-segmented-picker';
+```
+
+- `TEST_IDS.PICKER`: The entire segmented picker container (useful to check if visible).
+- `TEST_IDS.CONFIRM_BUTTON`: "Done" confirmation button in the top right hand corner.
+- `TEST_IDS.CLOSE_AREA`: Darkened area outside of the picker which hides the component when tapped.
+- `${`TEST_IDS.COLUMN`}columnId`: ScrollView for a specific picker column.
+- `${`TEST_IDS.COLUMN`}columnId_optionKeyOrLabel`: Specific picker item button within a column.
+
+You can see full examples of our own E2E Detox testing suite [here](https://github.com/adammcarth/react-native-segmented-picker/tree/master/__tests__).
+
 ## Contributions
 
 This is an open source project. Bug fixes, improvements and the addition of useful new features to this package are greatly appreciated.
@@ -200,8 +216,8 @@ This is an open source project. Bug fixes, improvements and the addition of usef
 1. Fork and clone the [repository from GitHub](https://github.com/adammcarth/react-native-segmented-picker).
 2. Setup: `yarn install`.
 3. Checkout a new branch, eg: `feature/my-thing` or `bugfix/terrible-thing`.
-4. After making any changes, make sure that `yarn run test` still passes.
-5. Ask yourself if there's a *new* unit test that you could write to capture your changes?
+4. After making any changes, make sure that `yarn test` still passes.
+5. Are there new unit test(s) that you could write to capture your changes?
 6. Submit a pull request to `master` outlining what your change is and how you tested it.
 
 Made with love in Melbourne by [Adam McArthur](https://github.com/adammcarth).

@@ -1,0 +1,188 @@
+name: Syntax, Unit & E2E Tests
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Syntax & Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+      - name: Load NodeJS 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Restore Cache (node_modules)
+        uses: actions/cache@v1
+        id: node-modules-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+      - name: Yarn Install
+        run: yarn install
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      - name: Run NPM Test Suite
+        run: yarn test
+  
+  android-e2e:
+    name: Android E2E Tests
+    runs-on: macos-latest
+    needs: test
+    timeout-minutes: 25
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+      - name: Load NodeJS 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Restore Cache (node_modules)
+        uses: actions/cache@v1
+        id: node-modules-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+      - name: Yarn Install
+        run: yarn install
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      - name: Restore Cache (examples/node_modules)
+        uses: actions/cache@v1
+        id: node-modules-examples-cache
+        with:
+          path: examples/node_modules
+          key: ${{ runner.os }}-node_modules-examples-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-examples
+      - name: Yarn Install (examples)
+        run: cd examples && yarn install
+        if: steps.node-modules-examples-cache.outputs.cache-hit != 'true'
+      - name: Start React Native Packager (E2E Mode)
+        run: cd examples && nohup yarn start-e2e-debug-packager &
+      - name: Run E2E Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: yarn e2e-android
+      - name: Archive Detox Results (Failed)
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: E2E Results (Android)
+          path: ./__tests__/.artifacts
+      - name: Archive Detox Results (Passed)
+        uses: actions/upload-artifact@v1
+        with:
+          name: E2E Results (Android)
+          path: ./__tests__/.artifacts
+
+  ios-e2e:
+    name: iOS E2E Tests
+    runs-on: macos-latest
+    needs: test
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_11.4.1.app/Contents/Developer
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+      - name: Load NodeJS 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Restore Cache (node_modules)
+        uses: actions/cache@v1
+        id: node-modules-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+      - name: Yarn Install
+        run: yarn install
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      - name: Restore Cache (examples/node_modules)
+        uses: actions/cache@v1
+        id: node-modules-examples-cache
+        with:
+          path: examples/node_modules
+          key: ${{ runner.os }}-node_modules-examples-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-examples
+      - name: Yarn Install (examples)
+        run: cd examples && yarn install
+        if: steps.node-modules-examples-cache.outputs.cache-hit != 'true'
+      - name: Setup iOS Build Tools
+        run: |
+          brew tap wix/brew && brew install applesimutils
+          yarn detox clean-framework-cache
+          yarn detox build-framework-cache
+      - name: Restore Cache (ios/Pods)
+        uses: actions/cache@v1
+        id: ios-pods-cache
+        with:
+          path: examples/ios/Pods
+          key: ${{ runner.os }}-ios-pods-${{ hashFiles('examples/ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-ios-pods-
+      - name: Start React Native Packager (E2E Mode)
+        run: cd examples && nohup yarn start-e2e-debug-packager &
+      - name: Run E2E Tests
+        run: yarn e2e-ios
+      - name: Archive Detox Results (Failed)
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: E2E Results (iOS)
+          path: ./__tests__/.artifacts
+      - name: Archive Detox Results (Passed)
+        uses: actions/upload-artifact@v1
+        with:
+          name: E2E Results (iOS)
+          path: ./__tests__/.artifacts
+
+  publish:
+    name: Publish To NPM
+    runs-on: ubuntu-latest
+    needs: [test, android-e2e, ios-e2e]
+    timeout-minutes: 5
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+      - name: Load NodeJS 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Restore Cache (node_modules)
+        uses: actions/cache@v1
+        id: node-modules-cache
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-
+      - name: Yarn Install
+        run: yarn install
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      - name: Build Package
+        run: |
+          yarn build
+          npm pack
+          echo "::set-env name=TARBALL::$(ls | grep react-native-segmented-picker*.tgz | sed -n '1 p')"
+      - name: Submit Package Update
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        run: npm publish
+      - name: Archive Package (Tarball)
+        uses: actions/upload-artifact@v1
+        with:
+          name: Upload Tarball
+          path: ${{ env.TARBALL }}

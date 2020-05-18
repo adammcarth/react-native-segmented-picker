@@ -2,8 +2,9 @@
 
 This folder contains a barebones React Native project with some examples of the segmented picker in action. Code examples are located in the `src` folder.
 
-- `src/Example1`: Very simple example of the component being used.
-- `src/Example2`: Example of updating list data based off a user's selection.
+- `src/ExampleA`: Very simple example of the component being used with 1, 2 and 3 columns.
+- `src/ExampleB`: Example of using the `visible` prop to control picker visibility.
+- `src/ExampleC`: TO DO! An example of changing list items based on selections.
 
 ## Installation & Setup
 
@@ -15,9 +16,9 @@ You can run this example project on your local machine to view the demos.
 4. Setup a fake `node_module` with the below command:
 
 ```bash
-# CWD: /react-native-segmented-picker/examples
+# CWD: /react-native-segmented-picker
 
-$ rsync -av --exclude 'examples' --exclude 'node_modules' --exclude '.git' ../ ./node_modules/react-native-segmented-picker && cd ./node_modules/react-native-segmented-picker && yarn install --production && cd ../../
+$ yarn build-into-examples
 ```
 
 ### Run instructions for iOS:
