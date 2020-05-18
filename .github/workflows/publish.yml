@@ -177,9 +177,9 @@ jobs:
           yarn build
           npm pack
           echo "::set-env name=TARBALL::$(ls | grep react-native-segmented-picker*.tgz | sed -n '1 p')"
+      - name: Authenticate With NPM Registry
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
       - name: Submit Package Update
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         run: npm publish
       - name: Archive Package (Tarball)
         uses: actions/upload-artifact@v1
