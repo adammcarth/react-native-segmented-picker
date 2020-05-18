@@ -60,6 +60,7 @@
     "*.config.js",
     "examples",
     "__mocks__",
+    "__tests__",
     "**/*.test.*"
   ]
 }
