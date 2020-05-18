@@ -130,7 +130,7 @@ jobs:
         id: ios-pods-cache
         with:
           path: examples/ios/Pods
-          key: ${{ runner.os }}-ios-pods-${{ hashFiles('ios/Podfile.lock') }}
+          key: ${{ runner.os }}-ios-pods-${{ hashFiles('examples/ios/Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-ios-pods-
       - name: Start React Native Packager (E2E Mode)
