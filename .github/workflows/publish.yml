@@ -149,7 +149,7 @@ jobs:
           name: E2E Results (iOS)
           path: ./__tests__/.artifacts
 
-  - publish:
+  publish:
     name: Publish To NPM
     runs-on: ubuntu-latest
     needs: [test, android-e2e, ios-e2e]
