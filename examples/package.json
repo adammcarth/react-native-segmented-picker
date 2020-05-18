@@ -6,7 +6,7 @@
     "postinstall": "cd ../ && yarn build-into-examples",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start",
+    "start": "yarn react-native start",
     "test": "eslint ./",
     "start-e2e-debug-packager": "RN_BUNDLE_TYPE=E2E E2E_MODE=debug yarn start",
     "e2e-android-debug-init": "cd ../ && yarn detox build -c android.debug",
