@@ -204,8 +204,8 @@ import { TEST_IDS } from 'react-native-segmented-picker';
 - `TEST_IDS.PICKER`: The entire segmented picker container (useful to check if visible).
 - `TEST_IDS.CONFIRM_BUTTON`: "Done" confirmation button in the top right hand corner.
 - `TEST_IDS.CLOSE_AREA`: Darkened area outside of the picker which hides the component when tapped.
-- `${`TEST_IDS.COLUMN`}columnId`: ScrollView for a specific picker column.
-- `${`TEST_IDS.COLUMN`}columnId_optionKeyOrLabel`: Specific picker item button within a column.
+- ``${`TEST_IDS.COLUMN`}columnId``: ScrollView for a specific picker column.
+- ``${`TEST_IDS.COLUMN`}columnId_optionKeyOrLabel``: Specific picker item button within a column.
 
 You can see full examples of our own E2E Detox testing suite [here](https://github.com/adammcarth/react-native-segmented-picker/tree/master/__tests__).
 
