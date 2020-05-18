@@ -6,3 +6,4 @@ package-lock.json
 .npmrc
 dist
 __tests__/.artifacts
+nohup.out

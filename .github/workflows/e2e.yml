@@ -31,7 +31,12 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: yarn e2e-android
+          script: |
+            cd examples
+            nohup yarn start-e2e-debug-packager &
+            cd ../
+            yarn e2e-android
+            kill %1
       - name: Archive Detox Results (Failed)
         uses: actions/upload-artifact@v1
         if: failure()
@@ -82,7 +87,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-ios-pods-
       - name: Run E2E Tests
-        run: yarn e2e-ios
+        run: |
+          cd examples
+          nohup yarn start-e2e-debug-packager &
+          cd ../
+          yarn e2e-ios
+          kill %1
       - name: Archive Detox Results (Failed)
         uses: actions/upload-artifact@v1
         if: failure()

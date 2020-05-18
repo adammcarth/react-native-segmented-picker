@@ -20,3 +20,4 @@ babel.rollup.config.js
 src
 !dist/src
 index.ts
+nohup.out
