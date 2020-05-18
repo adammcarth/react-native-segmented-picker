@@ -54,6 +54,17 @@ jobs:
       - name: Yarn Install
         run: yarn install
         if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      - name: Restore Cache (examples/node_modules)
+        uses: actions/cache@v1
+        id: node-modules-examples-cache
+        with:
+          path: examples/node_modules
+          key: ${{ runner.os }}-node_modules-examples-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-examples
+      - name: Yarn Install (examples)
+        run: cd examples && yarn install
+        if: steps.node-modules-examples-cache.outputs.cache-hit != 'true'
       - name: Run E2E Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -101,6 +112,17 @@ jobs:
       - name: Yarn Install
         run: yarn install
         if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      - name: Restore Cache (examples/node_modules)
+        uses: actions/cache@v1
+        id: node-modules-examples-cache
+        with:
+          path: examples/node_modules
+          key: ${{ runner.os }}-node_modules-examples-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node_modules-examples
+      - name: Yarn Install (examples)
+        run: cd examples && yarn install
+        if: steps.node-modules-examples-cache.outputs.cache-hit != 'true'
       - name: Setup iOS Build Tools
         run: |
           brew tap wix/brew && brew install applesimutils
