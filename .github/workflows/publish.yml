@@ -65,16 +65,13 @@ jobs:
       - name: Yarn Install (examples)
         run: cd examples && yarn install
         if: steps.node-modules-examples-cache.outputs.cache-hit != 'true'
+      - name: Start React Native Packager (E2E Mode)
+        run: cd examples && nohup yarn start-e2e-debug-packager &
       - name: Run E2E Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: |
-            cd examples
-            nohup yarn start-e2e-debug-packager &
-            cd ../
-            yarn e2e-android
-            kill %1
+          script: yarn e2e-android
       - name: Archive Detox Results (Failed)
         uses: actions/upload-artifact@v1
         if: failure()
@@ -136,13 +133,10 @@ jobs:
           key: ${{ runner.os }}-ios-pods-${{ hashFiles('ios/Podfile.lock') }}
           restore-keys: |
             ${{ runner.os }}-ios-pods-
+      - name: Start React Native Packager (E2E Mode)
+        run: cd examples && nohup yarn start-e2e-debug-packager &
       - name: Run E2E Tests
-        run: |
-          cd examples
-          nohup yarn start-e2e-debug-packager &
-          cd ../
-          yarn e2e-ios
-          kill %1
+        run: yarn e2e-ios
       - name: Archive Detox Results (Failed)
         uses: actions/upload-artifact@v1
         if: failure()
