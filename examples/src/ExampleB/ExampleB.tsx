@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import SegmentedPicker, {
   PickerOptions,
   Selections,
+  ANIMATION_TIME,
 } from 'react-native-segmented-picker';
 import Button from '../Button';
 import { generateOptions } from '../utils';
@@ -49,7 +50,9 @@ class ExampleA extends Component<Props, State> {
           ...newDefaults,
           [column]: selections[column].label,
         }), {}),
-    }, () => {
+    }, async () => {
+      // Wait for the close animation time to avoid fade out glitches!
+      await new Promise(resolve => setTimeout(resolve, ANIMATION_TIME));
       this.props.onConfirm(selections);
     });
   };
