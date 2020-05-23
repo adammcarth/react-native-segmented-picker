@@ -1,6 +1,6 @@
 {
   "name": "react-native-segmented-picker",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A segmentable dropdown picker wheel with no native dependencies.",
   "author": "Adam McArthur",
   "license": "MIT",
