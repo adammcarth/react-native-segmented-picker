@@ -93,9 +93,13 @@ jobs:
           key: ${{ runner.os }}-node_modules-examples-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node_modules-examples
-      - name: Yarn Install (examples)
+      - name: Yarn Install (./examples)
         run: cd examples && yarn install
         if: steps.node-modules-examples-cache.outputs.cache-hit != 'true'
+      # Runs `yarn postinstall` if the above step was skipped
+      - name: Post Install (./examples/node_modules) (Manual)
+        run: cd examples && yarn postinstall
+        if: steps.node-modules-examples-cache.outputs.cache-hit == 'true'
       - name: Setup iOS Build Tools
         run: |
           brew tap wix/brew && brew install applesimutils
