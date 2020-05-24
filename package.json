@@ -12,7 +12,6 @@
     "unit-test": "jest --testPathIgnorePatterns __tests__/",
     "test": "yarn lint && yarn unit-test",
     "build": "rm -rf dist && rollup --config rollup.config.js",
-    "build-into-examples": "yarn build && rsync -zrv ./ ./examples/node_modules/react-native-segmented-picker --include 'package.json' --include 'yarn.lock' --include 'dist/***' --exclude '*' && cd ./examples/node_modules/react-native-segmented-picker && yarn install --production",
     "e2e-android": "cd examples && yarn install && yarn e2e-android-debug-init && yarn e2e-android-debug --take-screenshots all --record-logs all",
     "e2e-ios": "cd examples && yarn install && cd ios && pod install && cd ../ && yarn e2e-ios-debug-init && yarn e2e-ios-debug --take-screenshots all --record-logs all"
   },
