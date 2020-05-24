@@ -394,7 +394,10 @@ export default class SegmentedPicker extends Component<Props, State> {
     column: string,
   ): void => {
     this.cache.set(`${IS_MOMENTUM_SCROLLING}${column}`, false);
-    if (!this.cache.get(`${IS_DRAGGING}${column}`)) {
+    if (Platform.OS === 'ios') {
+      event.persist();
+      this.selectIndexFromScrollPosition(event, column, 50);
+    } else {
       this.selectIndexFromScrollPosition(event, column);
     }
   };
@@ -606,6 +609,10 @@ export default class SegmentedPicker extends Component<Props, State> {
                       onMomentumScrollBegin={event => this.onMomentumScrollBegin(event, column)}
                       onMomentumScrollEnd={event => this.onMomentumScrollEnd(event, column)}
                       scrollEventThrottle={32}
+                      decelerationRate={Platform.select({
+                        ios: 0.993999,
+                        android: 0.985,
+                      })}
                       testID={`${TEST_IDS.COLUMN}${column}`}
                     />
                   </View>
