@@ -54,5 +54,6 @@ module.exports = {
     ],
     'jest/consistent-test-it': 'error',
     'react/static-property-placement': 0,
+    'no-async-promise-executor': 0,
   },
 };

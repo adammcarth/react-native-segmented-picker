@@ -36,7 +36,7 @@ const {
 
 export interface Props {
   options: PickerOptions;
-  visible: boolean | null;
+  visible: boolean;
   defaultSelections: {
     [column: string]: string;
   };
@@ -87,6 +87,16 @@ export default class SegmentedPicker extends Component<Props, State> {
   }
 
   /**
+   * Used in rare circumstances where this component is mounted with the `visible`
+   * prop set to true. We must animate the picker in immediately.
+   */
+  componentDidMount(): void {
+    if (this.props.visible === true) {
+      this.show();
+    }
+  }
+
+  /**
    * Animates in-and-out when toggling picker visibility with the `visible` prop.
    */
   componentDidUpdate(prevProps: Props): void {
@@ -114,19 +124,23 @@ export default class SegmentedPicker extends Component<Props, State> {
    * External Usage: `ref.current.hide()`
    * @return {Promise<void>}
    */
-  hide = async (): Promise<void> => {
-    if (Platform.OS === 'ios') {
-      this.setState({ visible: false }, () => {
-        this.cache.purge();
-      });
-    } else {
-      this.modalContainerRef.current.fadeOut(ANIMATION_TIME);
-      await this.pickerContainerRef.current.fadeOut(ANIMATION_TIME);
-      this.setState({ visible: false }, () => {
-        this.cache.purge();
-      });
-    }
-  };
+  hide = async (): Promise<void> => (
+    new Promise(async (resolve) => {
+      if (Platform.OS === 'ios') {
+        this.setState({ visible: false }, async () => {
+          await new Promise(done => setTimeout(done, ANIMATION_TIME));
+          this.cache.purge();
+          resolve();
+        });
+      } else {
+        await this.modalContainerRef.current?.fadeOut(ANIMATION_TIME);
+        this.setState({ visible: false }, () => {
+          this.cache.purge();
+          resolve();
+        });
+      }
+    })
+  );
 
   /**
    * Selects a specific label in the picklist and focuses it.
@@ -431,22 +445,28 @@ export default class SegmentedPicker extends Component<Props, State> {
    * @private
    * This method is called when the picker is closed unexpectedly without pressing the
    * "Done" button in the top right hand corner.
-   * @return {void}
+   * @return {Promise<void>}
    */
-  private onCancel = (): void => {
-    this.props.onCancel(this.getCurrentSelections());
-    this.hide();
+  private onCancel = async (): Promise<void> => {
+    const selections = { ...this.getCurrentSelections() };
+    if (this.props.visible !== true) {
+      await this.hide();
+    }
+    this.props.onCancel(selections);
   };
 
   /**
    * @private
    * This method is called when the right action button (default: "Done") is tapped.
    * It calls the `onConfirm` method and hides the picker.
-   * @return {void}
+   * @return {Promise<void>}
    */
-  private onConfirm = (): void => {
-    this.props.onConfirm(this.getCurrentSelections());
-    this.hide();
+  private onConfirm = async (): Promise<void> => {
+    const selections = { ...this.getCurrentSelections() };
+    if (this.props.visible !== true) {
+      await this.hide();
+    }
+    this.props.onConfirm(selections);
   };
 
   /**
@@ -521,8 +541,12 @@ export default class SegmentedPicker extends Component<Props, State> {
 
           <Animatable.View
             useNativeDriver
-            animation="slideInUp"
-            easing="ease-in-out-cubic"
+            animation={{
+              from: { opacity: 0, translateY: 250 },
+              to: { opacity: 1, translateY: 0 },
+            }}
+            easing="ease-out-quint"
+            delay={100}
             duration={ANIMATION_TIME}
             ref={this.pickerContainerRef}
             style={[
