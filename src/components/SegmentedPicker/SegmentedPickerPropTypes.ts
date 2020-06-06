@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 
 export const defaultProps = {
-  visible: null,
+  visible: false,
   defaultSelections: {},
   size: 45,
   confirmText: 'Done',
