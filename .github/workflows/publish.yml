@@ -186,6 +186,7 @@ jobs:
           yarn build
           npm pack
           echo "::set-env name=TARBALL::$(ls | grep react-native-segmented-picker*.tgz | sed -n '1 p')"
+          echo "::set-env name=PKG_VERSION::$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')"
       - name: Submit Package Update (npmjs.org)
         run: npm publish --access public
         env:
@@ -199,6 +200,13 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Tag Version (Git)
+        run: git tag v$PKG_VERSION
+      - name: Push Git Version Tag
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tags: true
       - name: Archive Package (Tarball)
         uses: actions/upload-artifact@v1
         with:
