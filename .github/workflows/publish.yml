@@ -169,6 +169,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
+          registry-url: 'https://registry.npmjs.org'
       - name: Restore Cache (node_modules)
         uses: actions/cache@v1
         id: node-modules-cache
@@ -185,10 +186,19 @@ jobs:
           yarn build
           npm pack
           echo "::set-env name=TARBALL::$(ls | grep react-native-segmented-picker*.tgz | sed -n '1 p')"
-      - name: Authenticate With NPM Registry
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
-      - name: Submit Package Update
+      - name: Submit Package Update (npmjs.org)
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - name: Re-configure NPM Registry To GitHub Packages
+        uses: actions/setup-node@v1
+        with:
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@adammcarth'
+      - name: Submit Package Update (GitHub Packages)
         run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Archive Package (Tarball)
         uses: actions/upload-artifact@v1
         with:
