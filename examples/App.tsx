@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, requireNativeComponent, UIManager, findNodeHandle } from 'react-native';
 import { Selections } from 'react-native-segmented-picker';
 import './src/config/YellowBox';
 import { showSelections } from './src/utils';
@@ -13,11 +13,23 @@ interface State {
 }
 
 export default class SegmentedPickerDemo extends React.Component<Props, State> {
+  uiPickerRef: any;
+
   constructor(props) {
     super(props);
     this.state = {
       stringifiedSelections: '{}',
     };
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      UIManager.dispatchViewManagerCommand(
+        findNodeHandle(this.uiPickerRef),
+        UIManager.UIPicker.Commands.confirmSelections,
+        [],
+      );
+    }, 10000);
   }
 
   /**
@@ -33,6 +45,7 @@ export default class SegmentedPickerDemo extends React.Component<Props, State> {
   };
 
   render() {
+    const UIPicker = requireNativeComponent('UIPicker');
     return (
       <View
         style={{
@@ -47,6 +60,14 @@ export default class SegmentedPickerDemo extends React.Component<Props, State> {
           <ExampleA columns={2} onConfirm={this.onConfirm} />
           <ExampleA columns={3} onConfirm={this.onConfirm} />
           <ExampleB columns={1} onConfirm={this.onConfirm} />
+          <UIPicker
+            ref={e => this.uiPickerRef = e}
+            style={{ width: 300, height: 200 }}
+            options={{ column1: [{ label: 'Adam' }, { label: 'Emma' }], column2: [{ label: 'Rob' }] }}
+            defaultSelections={{ column1: 'Emma' }}
+            onValueChange={e => console.info('onValueChange', e.nativeEvent)}
+            onConfirm={e => console.info('onConfirm', e.nativeEvent)}
+          />
         </View>
 
         <View style={{ position: 'absolute', bottom: 0, left: 0 }}>
