@@ -160,7 +160,7 @@ jobs:
   publish:
     name: Publish To NPM
     runs-on: ubuntu-latest
-    # needs: [test, android-e2e, ios-e2e]
+    needs: [test, android-e2e, ios-e2e]
     timeout-minutes: 5
     steps:
       - name: Clone Repository
@@ -187,10 +187,10 @@ jobs:
           npm pack
           echo "::set-env name=TARBALL::$(ls | grep react-native-segmented-picker*.tgz | sed -n '1 p')"
           echo "::set-env name=PKG_VERSION::$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')"
-      # - name: Submit Package Update (npmjs.org)
-      #   run: npm publish --access public
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - name: Submit Package Update (npmjs.org)
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
       - name: Re-configure NPM Registry To GitHub Packages
         uses: actions/setup-node@v1
         with:
