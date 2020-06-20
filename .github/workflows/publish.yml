@@ -169,6 +169,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
+          registry-url: 'https://registry.npmjs.org'
       - name: Restore Cache (node_modules)
         uses: actions/cache@v1
         id: node-modules-cache
@@ -185,10 +186,31 @@ jobs:
           yarn build
           npm pack
           echo "::set-env name=TARBALL::$(ls | grep react-native-segmented-picker*.tgz | sed -n '1 p')"
-      - name: Authenticate With NPM Registry
-        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}" >> ~/.npmrc
-      - name: Submit Package Update
-        run: npm publish
+          echo "::set-env name=PKG_VERSION::$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')"
+      - name: Submit Package Update (npmjs.org)
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - name: Re-configure NPM Registry To GitHub Packages
+        uses: actions/setup-node@v1
+        with:
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@adammcarth'
+      - name: Submit Package Update (GitHub Packages)
+        run: |
+          mv package.json npm_package.json
+          cat npm_package.json | jq -c '.name="@adammcarth/react-native-segmented-picker"' > package.json
+          yarn build
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Tag Version (Git)
+        run: git tag v$PKG_VERSION
+      - name: Push Git Version Tag
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tags: true
       - name: Archive Package (Tarball)
         uses: actions/upload-artifact@v1
         with:
