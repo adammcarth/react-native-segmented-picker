@@ -5,7 +5,7 @@ import SegmentedPicker, {
   Selections,
 } from 'react-native-segmented-picker';
 import Button from '../Button';
-import { generateOptions } from '../utils';
+import { generatePickerItems } from '../utils';
 
 interface Props {
   columns: number;
@@ -14,7 +14,7 @@ interface Props {
 
 interface State {
   options: PickerOptions;
-  selections: { [column: string]: string };
+  selections: Selections;
 }
 
 class ExampleA extends Component<Props, State> {
@@ -25,10 +25,14 @@ class ExampleA extends Component<Props, State> {
     this.state = {
       options: Array(props.columns)
         .fill('')
-        .reduce((options, emptyString, index) => ({
+        .reduce((options, emptyString, index) => ([
           ...options,
-          [`column${index + 1}`]: generateOptions(25),
-        }), {}),
+          {
+            key: `column_${index + 1}`,
+            testID: `column_${index + 1}`,
+            items: generatePickerItems(`${index + 1}`, 25),
+          },
+        ]), []),
       selections: {},
     };
   }
@@ -39,11 +43,7 @@ class ExampleA extends Component<Props, State> {
 
   onConfirm = (selections: Selections) => {
     this.setState({
-      selections: Object.keys(selections)
-        .reduce((newDefaults, column) => ({
-          ...newDefaults,
-          [column]: selections[column].label,
-        }), {}),
+      selections,
     }, () => {
       this.props.onConfirm(selections);
     });

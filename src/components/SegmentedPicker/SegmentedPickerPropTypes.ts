@@ -1,16 +1,17 @@
 import PropTypes from 'prop-types';
 
 export const defaultProps = {
+  native: false,
   visible: false,
   defaultSelections: {},
-  size: 45,
+  size: 0.45,
   confirmText: 'Done',
   confirmTextColor: '#0A84FF',
-  listItemTextColor: '#282828',
+  pickerItemTextColor: '#282828',
   toolbarBackground: '#FAFAF8',
   toolbarBorderColor: '#E7E7E7',
-  selectionMarkerBackground: '#F8F8F8',
-  selectionMarkerBorderColor: '#DCDCDC',
+  selectionHighlightAlpha: 0.06,
+  selectionBorderColor: '#C9C9C9',
   containerBackground: '#FFFFFF',
   onValueChange: () => {},
   onCancel: () => {},
@@ -19,27 +20,21 @@ export const defaultProps = {
 
 export const propTypes = {
   // Core Props
-  options: PropTypes.objectOf((
-    propValue,
-    key,
-    componentName,
-    location,
-    propName,
-  ) => {
-    const column = propValue[key];
-    const failedError = new Error(
-      `Invalid prop \`${propName}\` supplied to \`${componentName}\`.`
-      + ' Must be in the format: `{column1: [{label: \'\'}, ...], column2: [...]}`',
-    );
-    try {
-      return !Array.isArray(column)
-      || (column.length > 0 && column.filter(item => !item.label).length > 0) ? (
-          failedError
-        ) : null;
-    } catch {
-      return failedError;
-    }
-  }).isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      items: PropTypes.arrayOf(
+        PropTypes.shape({
+          label: PropTypes.string.isRequired,
+          value: PropTypes.string.isRequired,
+          key: PropTypes.string,
+          testID: PropTypes.string,
+        }),
+      ).isRequired,
+      testID: PropTypes.string,
+      flex: PropTypes.number,
+    }),
+  ).isRequired,
   visible: PropTypes.bool,
   defaultSelections: PropTypes.objectOf((
     propValue,
@@ -52,28 +47,41 @@ export const propTypes = {
     return (column && String(column) !== column) ? (
       new Error(
         `Invalid prop \`${propName}\` supplied to \`${componentName}\`.`
-        + ' Must be in the format: `{column1: \'\', column2: \'\', ...}`',
+        + ' Must be in the format: `{column1: \'value\', column2: \'value\', ...}`',
       )
     ) : null;
   }),
   size: (props: any, propName: 'size', componentName: string) => {
-    const size = props[propName];
-    if (size === undefined) return null;
-    return !(size >= 0 && size <= 100) ? (
+    const value = props[propName];
+    if (value === undefined) return null;
+    return (value < 0 || value > 1) ? (
       new Error(
         `Invalid prop \`${propName}\` supplied to \`${componentName}\`.`
-        + ' Value must be a number between 0-100 representing the screen height to take up.',
+        + ' Value must be a float between 0-1 (representing the screen percentage to cover).',
       )
     ) : null;
   },
   confirmText: PropTypes.string,
   // Styling
   confirmTextColor: PropTypes.string,
-  listItemTextColor: PropTypes.string,
+  pickerItemTextColor: PropTypes.string,
   toolbarBackground: PropTypes.string,
   toolbarBorderColor: PropTypes.string,
-  selectionMarkerBackground: PropTypes.string,
-  selectionMarkerBorderColor: PropTypes.string,
+  selectionHighlightAlpha: (
+    props: any,
+    propName: 'selectionHighlightAlpha',
+    componentName: string,
+  ) => {
+    const value = props[propName];
+    if (value === undefined) return null;
+    return (value < 0 || value > 1) ? (
+      new Error(
+        `Invalid prop \`${propName}\` supplied to \`${componentName}\`.`
+        + ' Value must be a float between 0-1 (representing the highlight transparency amount).',
+      )
+    ) : null;
+  },
+  selectionBorderColor: PropTypes.string,
   containerBackground: PropTypes.string,
   // Events
   onValueChange: PropTypes.func,

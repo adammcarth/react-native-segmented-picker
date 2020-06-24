@@ -9,10 +9,20 @@
 
 @interface RCT_EXTERN_REMAP_MODULE(UIPicker, PickerViewManager, RCTViewManager)
 
-  RCT_EXPORT_VIEW_PROPERTY(options, NSDictionary)
+  RCT_EXPORT_VIEW_PROPERTY(options, NSArray)
   RCT_EXPORT_VIEW_PROPERTY(defaultSelections, NSDictionary)
+  RCT_EXPORT_VIEW_PROPERTY(theme, NSDictionary)
   RCT_EXPORT_VIEW_PROPERTY(onValueChange, RCTBubblingEventBlock)
-  RCT_EXPORT_VIEW_PROPERTY(onConfirm, RCTBubblingEventBlock)
-  RCT_EXTERN_METHOD(confirmSelections: (nonnull NSNumber *)node)
+  RCT_EXPORT_VIEW_PROPERTY(onEmitSelections, RCTBubblingEventBlock)
+  RCT_EXTERN_METHOD(
+    emitSelections: (nonnull NSNumber *)node
+    pid:(nonnull NSNumber *)pid
+  )
+  RCT_EXTERN_METHOD(
+    selectIndex: (nonnull NSNumber *)node
+    index:(nonnull NSNumber *)index
+    columnKey:(nonnull NSString *)columnKey
+    animated:(nonnull BOOL *)animated
+  )
 
 @end

@@ -18,18 +18,44 @@ class PickerViewManager: RCTViewManager {
   }
 
   /**
-   * Allows the React Native client to manually trigger the `onConfirm` event. This should be executed to retreive
-   * the current selections on the user's screen - such as when closing or confirming the picker modal.
+   * Programmatically select an index in the picker.
+   * @param {NSNumber} node: Unique ID of the RTCView.
+   * @param {NSNumber} index: List index of the picker item to select.
+   * @param {String} columnKey: Unique key of the column to select.
+   * @param {Bool} animated: Should the selection "snap" or animate smoothly into place?
    * @return {Void}
    */
-  @objc func confirmSelections(_ node: NSNumber) -> Void {
+  @objc func selectIndex(
+    _ node: NSNumber,
+    index: NSNumber,
+    columnKey: String,
+    animated: Bool
+  ) -> Void {
     DispatchQueue.main.async {
       let picker = self.bridge.uiManager.view(
         forReactTag: node
       ) as! PickerView
-      picker.onConfirm!([
-        "selectionIndexes": picker.getCurrentSelectionIndexes()
-      ])
+      picker.selectIndex(index: index, columnKey: columnKey, animated: animated)
+    }
+  }
+
+  /**
+   * Allows the React Native client to request the current picker item selections through an emitted event.
+   * @param {NSNumber} node: Unique ID of the RTCView.
+   * @param {NSNumber} pid: A pre-generated Promise ID stored in the JavaScript Promise Factory.
+   * @return {Void}
+   */
+  @objc func emitSelections(_ node: NSNumber, pid: NSNumber) -> Void {
+    DispatchQueue.main.async {
+      let picker = self.bridge.uiManager.view(
+        forReactTag: node
+      ) as! PickerView
+      if picker.onEmitSelections != nil {
+        picker.onEmitSelections!([
+          "selections": picker.getCurrentSelectionValues(),
+          "pid": pid
+        ])
+      }
     }
   }
 }

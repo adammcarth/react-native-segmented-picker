@@ -1,10 +1,12 @@
 import React from 'react';
-import { View, Text, requireNativeComponent, UIManager, findNodeHandle } from 'react-native';
+import { View, Text } from 'react-native';
 import { Selections } from 'react-native-segmented-picker';
 import './src/config/YellowBox';
 import { showSelections } from './src/utils';
 import ExampleA from './src/ExampleA';
 import ExampleB from './src/ExampleB';
+import ExampleC from './src/ExampleC';
+import ExampleD from './src/ExampleD';
 
 interface Props {}
 
@@ -22,16 +24,6 @@ export default class SegmentedPickerDemo extends React.Component<Props, State> {
     };
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      UIManager.dispatchViewManagerCommand(
-        findNodeHandle(this.uiPickerRef),
-        UIManager.UIPicker.Commands.confirmSelections,
-        [],
-      );
-    }, 10000);
-  }
-
   /**
    * Keeps a log of the latest selection JSON from any of the examples below. This is
    * required for the E2E tests, where we place this content in a hidden view on the screen.
@@ -45,7 +37,6 @@ export default class SegmentedPickerDemo extends React.Component<Props, State> {
   };
 
   render() {
-    const UIPicker = requireNativeComponent('UIPicker');
     return (
       <View
         style={{
@@ -58,16 +49,9 @@ export default class SegmentedPickerDemo extends React.Component<Props, State> {
         <View style={{ width: '100%' }}>
           <ExampleA columns={1} onConfirm={this.onConfirm} />
           <ExampleA columns={2} onConfirm={this.onConfirm} />
-          <ExampleA columns={3} onConfirm={this.onConfirm} />
-          <ExampleB columns={1} onConfirm={this.onConfirm} />
-          <UIPicker
-            ref={e => this.uiPickerRef = e}
-            style={{ width: 300, height: 200 }}
-            options={{ column1: [{ label: 'Adam' }, { label: 'Emma' }], column2: [{ label: 'Rob' }] }}
-            defaultSelections={{ column1: 'Emma' }}
-            onValueChange={e => console.info('onValueChange', e.nativeEvent)}
-            onConfirm={e => console.info('onConfirm', e.nativeEvent)}
-          />
+          <ExampleB onConfirm={this.onConfirm} />
+          <ExampleC onConfirm={this.onConfirm} />
+          <ExampleD onConfirm={this.onConfirm} />
         </View>
 
         <View style={{ position: 'absolute', bottom: 0, left: 0 }}>

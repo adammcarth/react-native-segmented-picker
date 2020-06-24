@@ -18,7 +18,7 @@ interface State {
   visible: boolean;
 }
 
-class ExampleB extends Component<Props, State> {
+class ExampleC extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -59,13 +59,14 @@ class ExampleB extends Component<Props, State> {
     return (
       <View style={{ width: '100%', alignItems: 'center' }}>
         <Button
-          text="Example B (Prop Visibility)"
+          text="Example C (Native iOS)"
           onPress={this.showPicker}
-          backgroundColor="#71bf22"
-          testID="EXAMPLE_B"
+          backgroundColor="#f0af0a"
+          testID="EXAMPLE_C"
         />
 
         <SegmentedPicker
+          native
           visible={visible}
           onConfirm={this.onConfirm}
           onCancel={this.hidePicker}
@@ -77,4 +78,4 @@ class ExampleB extends Component<Props, State> {
   }
 }
 
-export default ExampleB;
+export default ExampleC;
