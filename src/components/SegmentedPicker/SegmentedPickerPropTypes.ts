@@ -9,11 +9,11 @@ export const defaultProps = {
   nativeTestID: undefined,
   confirmTextColor: '#0A84FF',
   pickerItemTextColor: '#282828',
-  toolbarBackground: '#FAFAF8',
+  toolbarBackgroundColor: '#FAFAF8',
   toolbarBorderColor: '#E7E7E7',
-  selectionHighlightAlpha: 0.06,
+  selectionBackgroundColor: '#F8F8F8',
   selectionBorderColor: '#C9C9C9',
-  containerBackground: '#FFFFFF',
+  backgroundColor: '#FFFFFF',
   onValueChange: () => {},
   onCancel: () => {},
   onConfirm: () => {},
@@ -67,24 +67,11 @@ export const propTypes = {
   // Styling
   confirmTextColor: PropTypes.string,
   pickerItemTextColor: PropTypes.string,
-  toolbarBackground: PropTypes.string,
+  toolbarBackgroundColor: PropTypes.string,
   toolbarBorderColor: PropTypes.string,
-  selectionHighlightAlpha: (
-    props: any,
-    propName: 'selectionHighlightAlpha',
-    componentName: string,
-  ) => {
-    const value = props[propName];
-    if (value === undefined) return null;
-    return (value < 0 || value > 1) ? (
-      new Error(
-        `Invalid prop \`${propName}\` supplied to \`${componentName}\`.`
-        + ' Value must be a float between 0-1 (representing the highlight transparency amount).',
-      )
-    ) : null;
-  },
+  selectionBackgroundColor: PropTypes.string,
   selectionBorderColor: PropTypes.string,
-  containerBackground: PropTypes.string,
+  backgroundColor: PropTypes.string,
   // Events
   onValueChange: PropTypes.func,
   onCancel: PropTypes.func,

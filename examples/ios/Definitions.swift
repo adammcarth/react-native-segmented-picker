@@ -45,7 +45,7 @@ struct PickerItem: CustomStringConvertible {
 struct PickerTheme: CustomStringConvertible {
   let itemHeight: CGFloat
   let selectionMarkerBorderColor, pickerItemTextColor: String
-  let selectionHighlightAlpha: CGFloat
+  let selectionBackgroundColor: String
   init(theme: NSDictionary?) {
     let itemHeightNumber = theme?["itemHeight"] as? NSNumber ?? 46
     self.itemHeight = CGFloat(truncating: itemHeightNumber)
@@ -55,7 +55,7 @@ struct PickerTheme: CustomStringConvertible {
     self.pickerItemTextColor = (
       theme?["pickerItemTextColor"] as? String ?? "#282828"
     )
-    self.selectionHighlightAlpha = theme?["selectionHighlightAlpha"] as? CGFloat ?? 0.03
+    self.selectionBackgroundColor = theme?["selectionBackgroundColor"] as? String ?? ""
   }
   var description: String {
     return "PickerTheme"

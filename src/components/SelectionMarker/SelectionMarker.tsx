@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import styles from './SelectionMarkerStyles';
 
 interface Props {
-  highlightAlpha: number;
+  backgroundColor: string;
   borderColor: string;
 }
 
@@ -11,7 +11,7 @@ interface Props {
  * Horizontal bar used to indicate the current picker selections.
  */
 export default ({
-  highlightAlpha,
+  backgroundColor,
   borderColor,
 }: Props): ReactElement => (
   <View style={styles.selectionMarkerContainer}>
@@ -21,12 +21,7 @@ export default ({
         { backgroundColor: borderColor },
       ]}
     />
-    <View
-      style={[
-        styles.selectionMarker,
-        { backgroundColor: `rgba(0, 0, 0, ${highlightAlpha})` },
-      ]}
-    />
+    <View style={[styles.selectionMarker, { backgroundColor }]} />
     <View
       style={[
         styles.selectionMarkerBorder,

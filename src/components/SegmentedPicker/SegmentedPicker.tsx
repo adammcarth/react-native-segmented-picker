@@ -56,11 +56,11 @@ export interface Props {
   // Styling
   confirmTextColor: string;
   pickerItemTextColor: string;
-  toolbarBackground: string;
+  toolbarBackgroundColor: string;
   toolbarBorderColor: string;
-  selectionHighlightAlpha: number;
+  selectionBackgroundColor: string;
   selectionBorderColor: string;
-  containerBackground: string;
+  backgroundColor: string;
   // Events
   onValueChange: (event: SelectionEvent) => void;
   onCancel: (event: Selections) => void,
@@ -629,11 +629,11 @@ export default class SegmentedPicker extends Component<Props, State> {
       confirmText,
       confirmTextColor,
       pickerItemTextColor,
-      toolbarBackground,
+      toolbarBackgroundColor,
       toolbarBorderColor,
-      selectionHighlightAlpha,
+      selectionBackgroundColor,
       selectionBorderColor,
-      containerBackground,
+      backgroundColor,
     } = this.props;
 
     return (
@@ -669,18 +669,12 @@ export default class SegmentedPicker extends Component<Props, State> {
             delay={100}
             duration={ANIMATION_TIME}
             ref={this.pickerContainerRef}
-            style={[
-              styles.pickerContainer,
-              {
-                height: `${size * 100}%`,
-                backgroundColor: containerBackground,
-              },
-            ]}
+            style={[styles.pickerContainer, { height: `${size * 100}%`, backgroundColor }]}
           >
             <Toolbar
               confirmText={confirmText}
               confirmTextColor={confirmTextColor}
-              toolbarBackground={toolbarBackground}
+              toolbarBackground={toolbarBackgroundColor}
               toolbarBorderColor={toolbarBorderColor}
               onConfirm={this.onConfirm}
             />
@@ -699,7 +693,7 @@ export default class SegmentedPicker extends Component<Props, State> {
                     onEmitSelections={this.uiPickerManager.ingestSelections}
                     theme={{
                       itemHeight: ITEM_HEIGHT,
-                      selectionHighlightAlpha: (selectionHighlightAlpha / 2),
+                      selectionBackgroundColor,
                       selectionBorderColor,
                       pickerItemTextColor,
                     }}
@@ -711,7 +705,7 @@ export default class SegmentedPicker extends Component<Props, State> {
               {!this.isNative() && (
                 <>
                   <SelectionMarker
-                    highlightAlpha={selectionHighlightAlpha}
+                    backgroundColor={selectionBackgroundColor}
                     borderColor={selectionBorderColor}
                   />
                   <View style={styles.pickerColumns} onLayout={this.measurePickersHeight}>

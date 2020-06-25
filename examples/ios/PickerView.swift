@@ -60,14 +60,19 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
         width: picker.frame.size.width,
         height: theme.itemHeight
       ))
-      selectionHighlighter.backgroundColor = UIColor.black.withAlphaComponent(
-        theme.selectionHighlightAlpha
+      selectionHighlighter.backgroundColor = UIColor(
+        hexString: theme.selectionBackgroundColor
       )
       selectionHighlighter.center = CGPoint(
         x: picker.frame.size.width / 2,
         y: picker.frame.size.height / 2
       )
-      picker.addSubview(selectionHighlighter)
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+        self.picker.subviews[0].subviews[0].insertSubview(
+          selectionHighlighter,
+          aboveSubview: self.picker.subviews[0].subviews[0].subviews[0]
+        )
+      }
     }
   }
 
@@ -146,10 +151,10 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
     forComponent component: Int,
     reusing view: UIView?
   ) -> UIView {
-    pickerView.subviews[2].backgroundColor = UIColor(
+    pickerView.subviews[1].backgroundColor = UIColor(
       hexString: theme.selectionMarkerBorderColor
     )
-    pickerView.subviews[3].backgroundColor = UIColor(
+    pickerView.subviews[2].backgroundColor = UIColor(
       hexString: theme.selectionMarkerBorderColor
     )
     let itemDimensions = pickerView.rowSize(forComponent: component)
