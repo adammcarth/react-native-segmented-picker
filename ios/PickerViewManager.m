@@ -6,7 +6,7 @@
  * Exposes the custom view properties and methods to React Native.
  */
 
-#import "React/RCTViewManager.h"
+#import <React/RCTViewManager.h>
 
 @interface RCT_EXTERN_REMAP_MODULE(UIPicker, PickerViewManager, RCTViewManager)
 
