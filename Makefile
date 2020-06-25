@@ -29,7 +29,7 @@ install: build
 		--include 'yarn.lock' \
 		--include 'dist/***' \
 		--include 'ios/***' \
-		--include 'react-native-config.js' \
+		--include 'react-native.config.js' \
 		--include 'RNSegmentedPicker.podspec' \
 		--exclude '*'
 	@cd ${project_root}/node_modules/react-native-segmented-picker && yarn install --production

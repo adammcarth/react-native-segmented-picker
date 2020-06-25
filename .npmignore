@@ -4,5 +4,5 @@
 !LICENSE
 !dist/**/*
 !ios/**/*
-!react-native-config.js
+!react-native.config.js
 !RNSegmentedPicker.podspec
