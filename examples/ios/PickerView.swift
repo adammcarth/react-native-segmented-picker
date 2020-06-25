@@ -14,6 +14,7 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
   var theme: PickerTheme = PickerTheme(theme: nil)
 
   // React Props
+  @objc(nativeTestID) var nativeTestIDProp = NSString()
   @objc(options) var optionsProp: [NSDictionary] = [] {
     didSet {
       parseOptionsProp()
@@ -51,6 +52,8 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
     // AKA: View Did Appear
     if newWindow != nil {
       picker.frame = self.frame
+      picker.accessibilityIdentifier = nativeTestIDProp as String
+
       let selectionHighlighter = UIView(frame: CGRect(
         x: 0,
         y: 0,
@@ -155,6 +158,7 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
     let frame = CGRect(x: 0, y: 0, width: width, height: height)
     let label = UILabel(frame: frame)
     label.text = options[component].items[row].label
+    label.accessibilityIdentifier = options[component].items[row].testID
     label.font = label.font.withSize(15.5)
     label.textColor = UIColor(hexString: theme.pickerItemTextColor)
     label.textAlignment = .center

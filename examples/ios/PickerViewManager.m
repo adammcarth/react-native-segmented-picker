@@ -9,6 +9,7 @@
 
 @interface RCT_EXTERN_REMAP_MODULE(UIPicker, PickerViewManager, RCTViewManager)
 
+  RCT_EXPORT_VIEW_PROPERTY(nativeTestID, NSString)
   RCT_EXPORT_VIEW_PROPERTY(options, NSArray)
   RCT_EXPORT_VIEW_PROPERTY(defaultSelections, NSDictionary)
   RCT_EXPORT_VIEW_PROPERTY(theme, NSDictionary)
