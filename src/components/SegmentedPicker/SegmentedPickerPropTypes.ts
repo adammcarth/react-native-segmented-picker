@@ -58,7 +58,8 @@ export const propTypes = {
     return (value < 0 || value > 1) ? (
       new Error(
         `Invalid prop \`${propName}\` supplied to \`${componentName}\`.`
-        + ' Value must be a float between 0-1 (representing the screen percentage to cover).',
+        + ' Must be a floating point between 0-1 representing the screen percentage to cover.'
+        + ' The default value is `0.45` (eg 45%).',
       )
     ) : null;
   },
