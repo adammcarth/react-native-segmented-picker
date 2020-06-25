@@ -52,6 +52,7 @@ export interface Props {
   defaultSelections: Selections;
   size: number;
   confirmText: string;
+  nativeTestID: string;
   // Styling
   confirmTextColor: string;
   pickerItemTextColor: string;
@@ -621,6 +622,7 @@ export default class SegmentedPicker extends Component<Props, State> {
   render() {
     const { visible } = this.state;
     const {
+      nativeTestID,
       options,
       defaultSelections,
       size,
@@ -689,6 +691,7 @@ export default class SegmentedPicker extends Component<Props, State> {
                 <View style={styles.nativePickerContainer}>
                   <UIPicker
                     ref={this.uiPickerManager.reactRef}
+                    nativeTestID={nativeTestID}
                     style={styles.nativePicker}
                     options={SegmentedPicker.ApplyPickerOptionDefaults(options)}
                     defaultSelections={defaultSelections}

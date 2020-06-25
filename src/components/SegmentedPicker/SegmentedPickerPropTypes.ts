@@ -6,6 +6,7 @@ export const defaultProps = {
   defaultSelections: {},
   size: 0.45,
   confirmText: 'Done',
+  nativeTestID: undefined,
   confirmTextColor: '#0A84FF',
   pickerItemTextColor: '#282828',
   toolbarBackground: '#FAFAF8',
@@ -62,6 +63,7 @@ export const propTypes = {
     ) : null;
   },
   confirmText: PropTypes.string,
+  nativeTestID: PropTypes.string,
   // Styling
   confirmTextColor: PropTypes.string,
   pickerItemTextColor: PropTypes.string,

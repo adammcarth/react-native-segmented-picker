@@ -15,7 +15,7 @@ export const generatePickerItems = (
       label,
       value: id,
       key: id,
-      testID: `column_${columnId}_${id}`,
+      testID: `${columnId}_${id}`,
     });
   }
   return options;

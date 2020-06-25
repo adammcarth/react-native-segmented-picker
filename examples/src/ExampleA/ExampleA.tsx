@@ -28,9 +28,9 @@ class ExampleA extends Component<Props, State> {
         .reduce((options, emptyString, index) => ([
           ...options,
           {
-            key: `column_${index + 1}`,
-            testID: `column_${index + 1}`,
-            items: generatePickerItems(`${index + 1}`, 25),
+            key: `col_${index + 1}`,
+            testID: `col_${index + 1}`,
+            items: generatePickerItems(`col_${index + 1}`, 25),
           },
         ]), []),
       selections: {},

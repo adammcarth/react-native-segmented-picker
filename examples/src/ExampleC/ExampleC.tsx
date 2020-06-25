@@ -24,9 +24,9 @@ class ExampleC extends Component<Props, State> {
     this.state = {
       options: [
         {
-          key: 'column_1',
-          testID: 'column_1',
-          items: generatePickerItems('column_1', 25),
+          key: 'col_1',
+          testID: 'col_1',
+          items: generatePickerItems('col_1', 25),
         },
       ],
       selections: {},
@@ -67,6 +67,7 @@ class ExampleC extends Component<Props, State> {
 
         <SegmentedPicker
           native
+          nativeTestID="example_native_picker"
           visible={visible}
           onConfirm={this.onConfirm}
           onCancel={this.hidePicker}

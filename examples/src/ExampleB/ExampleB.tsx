@@ -24,9 +24,9 @@ class ExampleB extends Component<Props, State> {
     this.state = {
       options: [
         {
-          key: 'column_1',
-          testID: 'column_1',
-          items: generatePickerItems('column_1', 25),
+          key: 'col_1',
+          testID: 'col_1',
+          items: generatePickerItems('col_1', 25),
         },
       ],
       selections: {},
