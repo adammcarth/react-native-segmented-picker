@@ -1,9 +1,10 @@
-//
-//  PickerViewManager.swift
-//  React Native Segmented Picker
-//
-//  Created by Adam McArthur on 20/6/20.
-//
+/**
+ * PickerViewManager.swift
+ * React Native Segmented Picker
+ * Created by Adam McArthur on 20/6/20.
+ *
+ * Interfaces React Native with the core `PickerView.swift` view logic.
+ */
 
 import Foundation
 

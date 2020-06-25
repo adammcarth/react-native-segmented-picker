@@ -12,10 +12,6 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1C767639CB6580D7FD4F8173 /* libPods-SegmentedPickerDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 60A69DEB336C191B0D1AB015 /* libPods-SegmentedPickerDemo.a */; };
-		6691E986249DED300005A233 /* PickerViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6691E985249DED300005A233 /* PickerViewManager.swift */; };
-		6691E989249DEF3F0005A233 /* PickerViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6691E988249DEF3F0005A233 /* PickerViewManager.m */; };
-		6691E98B249DFB580005A233 /* PickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6691E98A249DFB580005A233 /* PickerView.swift */; };
-		6691E98D249E21BB0005A233 /* Definitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6691E98C249E21BB0005A233 /* Definitions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,11 +30,6 @@
 		43895F5B6FC1D26448E5375F /* Pods-SegmentedPickerDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SegmentedPickerDemo.debug.xcconfig"; path = "Target Support Files/Pods-SegmentedPickerDemo/Pods-SegmentedPickerDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		60A69DEB336C191B0D1AB015 /* libPods-SegmentedPickerDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SegmentedPickerDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		60E208C27996E200FED7CA3B /* Pods-SegmentedPickerDemo-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SegmentedPickerDemo-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-SegmentedPickerDemo-tvOSTests/Pods-SegmentedPickerDemo-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		6691E985249DED300005A233 /* PickerViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerViewManager.swift; sourceTree = "<group>"; };
-		6691E987249DEE6E0005A233 /* SegmentedPickerDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SegmentedPickerDemo-Bridging-Header.h"; sourceTree = "<group>"; };
-		6691E988249DEF3F0005A233 /* PickerViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PickerViewManager.m; sourceTree = "<group>"; };
-		6691E98A249DFB580005A233 /* PickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerView.swift; sourceTree = "<group>"; };
-		6691E98C249E21BB0005A233 /* Definitions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Definitions.swift; sourceTree = "<group>"; };
 		756664A8AD22938E32EFCA1F /* libPods-SegmentedPickerDemoTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SegmentedPickerDemoTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B0A1EA180D0A28EA91E9ADC /* Pods-SegmentedPickerDemo-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SegmentedPickerDemo-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-SegmentedPickerDemo-tvOSTests/Pods-SegmentedPickerDemo-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8E77238A5716D37724985123 /* Pods-SegmentedPickerDemo-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SegmentedPickerDemo-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-SegmentedPickerDemo-tvOS/Pods-SegmentedPickerDemo-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
@@ -89,11 +80,6 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
-				6691E98C249E21BB0005A233 /* Definitions.swift */,
-				6691E98A249DFB580005A233 /* PickerView.swift */,
-				6691E988249DEF3F0005A233 /* PickerViewManager.m */,
-				6691E985249DED300005A233 /* PickerViewManager.swift */,
-				6691E987249DEE6E0005A233 /* SegmentedPickerDemo-Bridging-Header.h */,
 			);
 			name = SegmentedPickerDemo;
 			sourceTree = "<group>";
@@ -290,11 +276,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				6691E989249DEF3F0005A233 /* PickerViewManager.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
-				6691E98D249E21BB0005A233 /* Definitions.swift in Sources */,
-				6691E98B249DFB580005A233 /* PickerView.swift in Sources */,
-				6691E986249DED300005A233 /* PickerViewManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

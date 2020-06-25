@@ -1,9 +1,10 @@
-//
-//  PickerViewManager.m
-//  React Native Segmented Picker
-//
-//  Created by Adam McArthur on 20/6/20.
-//
+/**
+ * PickerViewManager.m
+ * React Native Segmented Picker
+ * Created by Adam McArthur on 20/6/20.
+ *
+ * Exposes the custom view properties and methods to React Native.
+ */
 
 #import "React/RCTViewManager.h"
 

@@ -1,9 +1,12 @@
-//
-//  Definitions.swift
-//  React Native Segmented Picker
-//
-//  Created by Adam McArthur on 20/6/20.
-//
+/**
+ * Definitions.swift
+ * React Native Segmented Picker
+ * Created by Adam McArthur on 20/6/20.
+ *
+ * This file contains strong typings that can be initialized with React Native props
+ * for usage throughout the UIPickerView. There are also some generic class
+ * extensions and helper methods.
+ */
 
 import Foundation
 import UIKit
