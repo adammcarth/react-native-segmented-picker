@@ -34,5 +34,7 @@ target 'SegmentedPickerDemo' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
+  pod 'react-native-segmented-picker', :podspec => '../node_modules/react-native-segmented-picker/react-native-segmented-picker.podspec'
+
   use_native_modules!
 end
