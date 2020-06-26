@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 
 export const defaultProps = {
   native: false,
+  options: [],
   visible: false,
   defaultSelections: {},
   size: 0.45,

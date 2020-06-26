@@ -106,9 +106,6 @@ export default class SegmentedPicker extends Component<Props, State> {
       visible: false,
       pickersHeight: 0,
     };
-    if (!props.options) {
-      throw new Error('<SegmentedPicker /> cannot render without the `options` prop.');
-    }
   }
 
   /**
