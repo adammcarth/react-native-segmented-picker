@@ -1,4 +1,4 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
 import {
   GUTTER_WIDTH,
   GUTTER_HEIGHT,
@@ -28,34 +28,13 @@ export default StyleSheet.create({
     alignItems: 'flex-start',
   },
 
-  toolbarContainer: {
-    width: '100%',
-    height: 42,
-    borderBottomWidth: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-  },
-
-  toolbarConfirmContainer: {
-    height: '100%',
-    paddingLeft: 30,
-    justifyContent: 'center',
-  },
-
-  toolbarConfirmText: {
-    fontWeight: 'bold',
-    fontSize: 15,
-    paddingTop: 0,
-    paddingRight: GUTTER_WIDTH,
-    paddingBottom: TEXT_CORRECTION,
-    paddingLeft: 0,
-  },
-
-  pickers: {
+  selectableArea: {
     flex: 1,
     alignSelf: 'stretch',
+  },
+
+  pickerColumns: {
+    flex: 1,
     flexDirection: 'row',
     paddingTop: GUTTER_HEIGHT,
     paddingRight: 0,
@@ -89,25 +68,14 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
 
-  selectionMarkerContainer: {
+  nativePickerContainer: {
+    width: Dimensions.get('window').width - (GUTTER_WIDTH * 2),
+    height: '100%',
+    marginLeft: GUTTER_WIDTH,
+  },
+
+  nativePicker: {
     width: '100%',
     height: '100%',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  // Eliminates border rendering inconsistencies between iOS & Android
-  selectionMarkerBorder: {
-    width: '100%',
-    height: 1,
-  },
-
-  selectionMarker: {
-    width: '100%',
-    height: ITEM_HEIGHT - 2,
   },
 });

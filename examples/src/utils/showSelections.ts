@@ -6,7 +6,7 @@ export const showSelections = (selections: Selections) => {
     'Selections:',
     Object.keys(selections)
       .map(column => (
-        `${column}: '${selections[column].label}'`
+        `${column}: '${selections[column]}'`
       ))
       .join(', '),
   );

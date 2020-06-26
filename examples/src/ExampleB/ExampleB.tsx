@@ -6,29 +6,29 @@ import SegmentedPicker, {
   ANIMATION_TIME,
 } from 'react-native-segmented-picker';
 import Button from '../Button';
-import { generateOptions } from '../utils';
+import { generatePickerItems } from '../utils';
 
 interface Props {
-  columns: number;
   onConfirm: (selections: Selections) => void;
 }
 
 interface State {
   options: PickerOptions;
-  selections: { [column: string]: string };
+  selections: Selections;
   visible: boolean;
 }
 
-class ExampleA extends Component<Props, State> {
+class ExampleB extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
-      options: Array(props.columns)
-        .fill('')
-        .reduce((options, emptyString, index) => ({
-          ...options,
-          [`column${index + 1}`]: generateOptions(25),
-        }), {}),
+      options: [
+        {
+          key: 'col_1',
+          testID: 'col_1',
+          items: generatePickerItems('col_1', 25),
+        },
+      ],
       selections: {},
       visible: false,
     };
@@ -45,11 +45,7 @@ class ExampleA extends Component<Props, State> {
   onConfirm = (selections: Selections) => {
     this.setState({
       visible: false,
-      selections: Object.keys(selections)
-        .reduce((newDefaults, column) => ({
-          ...newDefaults,
-          [column]: selections[column].label,
-        }), {}),
+      selections,
     }, async () => {
       // Wait for the close animation time to avoid fade out glitches!
       await new Promise(resolve => setTimeout(resolve, ANIMATION_TIME));
@@ -65,7 +61,7 @@ class ExampleA extends Component<Props, State> {
         <Button
           text="Example B (Prop Visibility)"
           onPress={this.showPicker}
-          backgroundColor="#25885d"
+          backgroundColor="#71bf22"
           testID="EXAMPLE_B"
         />
 
@@ -81,4 +77,4 @@ class ExampleA extends Component<Props, State> {
   }
 }
 
-export default ExampleA;
+export default ExampleB;

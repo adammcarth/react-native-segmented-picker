@@ -52,7 +52,7 @@ const Button = ({
 Button.defaultProps = {
   text: '',
   onPress: () => {},
-  backgroundColor: '#256188',
+  backgroundColor: '#3cb0e6',
 };
 
 export default Button;

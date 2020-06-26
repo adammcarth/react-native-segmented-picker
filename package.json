@@ -1,7 +1,7 @@
 {
   "name": "react-native-segmented-picker",
-  "version": "1.1.3",
-  "description": "A segmentable dropdown picker wheel with no native dependencies.",
+  "version": "2.0.0-alpha.0",
+  "description": "Selection picker wheel with multi-column support and optional native dependencies.",
   "author": "Adam McArthur",
   "license": "MIT",
   "private": false,
@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adammcarth/react-native-segmented-picker.git"
+    "url": "https://github.com/adammcarth/react-native-segmented-picker.git"
   },
   "homepage": "https://github.com/adammcarth/react-native-segmented-picker#readme",
   "bugs": {
@@ -25,19 +25,19 @@
   },
   "keywords": [
     "react-native",
-    "react native component",
-    "react native",
-    "ios",
-    "android",
-    "ui",
+    "UIPicker",
+    "UIPickerView",
     "spinner",
+    "picklist",
+    "select options",
     "dropdown list",
     "wheel spinner",
     "date spinner",
     "date picker",
     "wheel picker",
     "segmented picker",
-    "segmented dropdown"
+    "segmented dropdown",
+    "column picker"
   ],
   "dependencies": {
     "prop-types": ">= 15.0.0",

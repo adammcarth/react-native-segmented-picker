@@ -4,7 +4,7 @@ import BabelPlugin from '@rollup/plugin-babel';
 import pkg from './package.json';
 
 module.exports = {
-  input: 'index.ts',
+  input: './src/index.ts',
   output: [
     {
       file: pkg.main,
