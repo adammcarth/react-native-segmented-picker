@@ -1,11 +1,11 @@
 {
   "name": "react-native-segmented-picker",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-alpha.2",
   "description": "Selection picker wheel with multi-column support and optional native dependencies.",
   "author": "Adam McArthur",
   "license": "MIT",
   "private": false,
-  "main": "dist/index.js",
+  "main": "dist/bundle.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "lint": "eslint ./ && tsc --project ./tsconfig.json --noEmit --skipLibCheck",
@@ -73,7 +73,6 @@
     "react-native": "0.61.5",
     "react-test-renderer": "16.9.0",
     "rollup": "^2.10.2",
-    "rollup-plugin-terser": "^6.1.0",
     "rollup-plugin-typescript2": "^0.27.1",
     "typescript": "3.7.3"
   },
