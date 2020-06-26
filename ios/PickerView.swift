@@ -91,6 +91,7 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
       options += [PickerColumn(column: column)]
     }
     if defaultSelectionsApplied == true {
+      picker.reloadAllComponents()
       for (i, option) in options.enumerated() {
         let prevSelection = previousSelections.value(forKey: option.key) as? Int ?? 0
         if options[i].items.indices.contains(prevSelection) {
