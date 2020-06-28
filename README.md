@@ -4,13 +4,13 @@
 [![NPM Version](https://img.shields.io/npm/v/react-native-segmented-picker.svg?style=flat-square)](https://www.npmjs.com/package/react-native-segmented-picker)
 [![MIT Licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-A pure JavaScript implementation of the iOS style wheel spinner dropdown picker that is typically used for date and time selection.
+A cross platform implementation of the [iOS selection picker wheel](https://developer.apple.com/documentation/uikit/uipickerview) used for creating dynamic, multi-dimensional picklists.
 
-- Supports one or many columns (list segments).
-- Show any data in the picklists, not just [dates and times](https://github.com/henninghall/react-native-date-picker).
-- Customisable colors and sizing.
-- Does not rely on native dependencies (`react-native link` not required).
+- Support for multiple columns with flexible widths.
+- Display any text based content, not just [dates and times](https://github.com/henninghall/react-native-date-picker).
 - Works with apps built on [Expo](https://expo.io).
+- An opt-in native experience is available for iOS.
+- Customisable colors and sizing.
 
 ![Android Example](https://imgkk.com/i/z_da.gif)
 ![iOS Example](https://imgkk.com/i/qk1d.gif)
@@ -22,6 +22,8 @@ $ yarn add react-native-segmented-picker
 # or
 # $ npm install --save react-native-segmented-picker
 ```
+
+You may also [setup the native iOS extension](https://github.com/adammcarth/react-native-segmented-picker/tree/master/docs/Native%20iOS.md) at this time, but this is not mandatory.
 
 ## Usage
 
@@ -42,7 +44,7 @@ class Example extends Component {
 
   onConfirm = (selections) => {
     console.info(selections);
-    // => { column1: { label: 'Option 1' }, column2: { label: 'Option 3' } }
+    // => { "col_1": "option_1", "col_2": "option_3" }
   }
 
   render() {
@@ -50,15 +52,21 @@ class Example extends Component {
       <SegmentedPicker
         ref={this.segmentedPicker}
         onConfirm={this.onConfirm}
-        options={{
-          column1: [
-            { label: 'Option 1' },
-            { label: 'Option 2' },
-          ],
-          column2: [
-            { label: 'Option 3', key: 'option_3' },
-          ],
-        }}
+        options={[
+          {
+            key: 'col_1',
+            items: [
+              { label: 'Option 1', value: 'option_1' },
+              { label: 'Option 2', value: 'option_2' },
+            ],
+          },
+          {
+            key: 'col_2',
+            items: [
+              { label: 'Option 3', value: 'option_3' },
+            ],
+          },
+        ]}
       />
     );
   }

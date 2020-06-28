@@ -24,6 +24,7 @@ build:
 install: build
 	@rsync -zrv ${PKG_PATH}/ ${project_root}/node_modules/react-native-segmented-picker \
 		--include 'README.md' \
+		--include 'docs/***' \
 		--include 'LICENSE' \
 		--include 'package.json' \
 		--include 'yarn.lock' \
