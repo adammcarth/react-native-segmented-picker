@@ -11,11 +11,11 @@ Pod::Spec.new do |s|
   s.authors      = package['author']
   s.homepage     = package['homepage']
   s.platform     = :ios, "9.0"
-  s.ios.deployment_target = '9.0'
-  s.tvos.deployment_target = '10.0'
 
   s.source        = { git: package['repository']['url'], tag: "v#{s.version}" }
   s.source_files  = "ios/**/*.{h,m,swift}"
+
+  s.swift_version = "4.2"
 
   s.dependency 'React'
 end

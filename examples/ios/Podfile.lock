@@ -217,7 +217,7 @@ PODS:
     - React-cxxreact (= 0.61.2)
     - React-jsi (= 0.61.2)
     - ReactCommon/jscallinvoker (= 0.61.2)
-  - RNSegmentedPicker (2.0.0-alpha.0):
+  - RNSegmentedPicker (2.0.0-alpha.2):
     - React
   - Yoga (1.14.0)
 
@@ -336,7 +336,7 @@ SPEC CHECKSUMS:
   React-RCTText: e3ef6191cdb627855ff7fe8fa0c1e14094967fb8
   React-RCTVibration: fb54c732fd20405a76598e431aa2f8c2bf527de9
   ReactCommon: 5848032ed2f274fcb40f6b9ec24067787c42d479
-  RNSegmentedPicker: ea02431943d4af5913f0eefc9c33aa315dc4ff54
+  RNSegmentedPicker: 172f9b634f64fc973ce8c64ae220efdd5b15eac3
   Yoga: 14927e37bd25376d216b150ab2a561773d57911f
 
 PODFILE CHECKSUM: b50ca17d5b6262b2e7106accb102f10d8c3a790e

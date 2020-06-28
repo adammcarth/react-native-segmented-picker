@@ -55,25 +55,8 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
     if newWindow != nil {
       picker.frame = self.frame
       picker.accessibilityIdentifier = nativeTestIDProp as String
-
-      let selectionHighlighter = UIView(frame: CGRect(
-        x: 0,
-        y: 0,
-        width: picker.frame.size.width,
-        height: theme.itemHeight
-      ))
-      selectionHighlighter.backgroundColor = UIColor(
-        hexString: theme.selectionBackgroundColor
-      )
-      selectionHighlighter.center = CGPoint(
-        x: picker.frame.size.width / 2,
-        y: picker.frame.size.height / 2
-      )
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-        self.picker.subviews[0].subviews[0].insertSubview(
-          selectionHighlighter,
-          aboveSubview: self.picker.subviews[0].subviews[0].subviews[0]
-        )
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        self.renderSelectionMarker()
       }
     }
   }
@@ -85,12 +68,45 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
    * @return {Void}
    */
   func parseOptionsProp() -> Void {
-    let previousSelections = getCurrentSelectionIndexes()
     options.removeAll()
     for column in optionsProp {
       options += [PickerColumn(column: column)]
     }
+    applyDefaultSelections()
+    triggerListUpdate()
+  }
+
+  /**
+   * Sets the initial picker selections according to the `defaultSelections` prop.
+   * The outer conditional statement ensures that this method only executes once.
+   * @return {Void}
+   */
+  func applyDefaultSelections() -> Void {
+    if (
+      self.defaultSelectionsApplied == false
+      && self.defaultSelectionsProp.count > 0
+      && self.options.count > 0
+    ) {
+      _ = self.defaultSelectionsProp.map { (columnKey, itemValue) in
+        let columnIndex = self.findColumnIndex(columnKey: columnKey)
+        let itemIndex = self.findItemIndex(
+          columnIndex: columnIndex,
+          itemValue: itemValue
+        )
+        self.picker.selectRow(itemIndex, inComponent: columnIndex, animated: false)
+      }
+      self.defaultSelectionsApplied = true
+    }
+  }
+
+  /**
+   * Used to visually update the picker items after the data source has changed whilst preserving the
+   * currently selected indexes.
+   * @return {Void}
+   */
+  func triggerListUpdate() -> Void {
     if defaultSelectionsApplied == true {
+      let previousSelections = getCurrentSelectionIndexes()
       picker.reloadAllComponents()
       for (i, option) in options.enumerated() {
         let prevSelection = previousSelections.value(forKey: option.key) as? Int ?? 0
@@ -102,27 +118,27 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
   }
 
   /**
-   * Sets the current picker selections when the `defaultSelections` prop is specified.
-   * This method is only executed once when the component first mounts.
+   * Inserts the selection marker subview in-between the UIPickerView selection lines.
    * @return {Void}
    */
-  func applyDefaultSelections() -> Void {
-    // Conservatively delays this logic by 50ms so that we don't try and set
-    // the default selections before they have been set.
-    // @fixme Is there a safer way to achieve this? Seems 8/10 awful.
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-      if self.defaultSelectionsApplied == false {
-        _ = self.defaultSelectionsProp.map { (columnKey, itemValue) in
-          let columnIndex = self.findColumnIndex(columnKey: columnKey)
-          let itemIndex = self.findItemIndex(
-            columnIndex: columnIndex,
-            itemValue: itemValue
-          )
-          self.picker.selectRow(itemIndex, inComponent: columnIndex, animated: false)
-        }
-        self.defaultSelectionsApplied = true
-      }
-    }
+  func renderSelectionMarker() -> Void {
+    let selectionHighlighter = UIView(frame: CGRect(
+      x: 0,
+      y: 0,
+      width: picker.frame.size.width,
+      height: theme.itemHeight
+    ))
+    selectionHighlighter.backgroundColor = UIColor(
+      hexString: theme.selectionBackgroundColor
+    )
+    selectionHighlighter.center = CGPoint(
+      x: picker.frame.size.width / 2,
+      y: picker.frame.size.height / 2
+    )
+    picker.subviews[0].subviews[0].insertSubview(
+      selectionHighlighter,
+      aboveSubview: picker.subviews[0].subviews[0].subviews[0]
+    )
   }
 
   /**
