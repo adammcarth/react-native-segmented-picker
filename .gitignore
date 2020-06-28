@@ -7,3 +7,5 @@ package-lock.json
 dist
 __tests__/.artifacts
 nohup.out
+ios/RNSegmentedPicker.xcodeproj/project.xcworkspace/xcuserdata
+
