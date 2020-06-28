@@ -4,10 +4,10 @@
 [![NPM Version](https://img.shields.io/npm/v/react-native-segmented-picker.svg?style=flat-square)](https://www.npmjs.com/package/react-native-segmented-picker)
 [![MIT Licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-A cross platform implementation of Apple's [iOS picker wheel](https://developer.apple.com/documentation/uikit/uipickerview) which can be used to create dynamic, multi-dimensional picklists in React Native.
+A cross platform implementation of the [iOS picker wheel](https://developer.apple.com/documentation/uikit/uipickerview) used for creating dynamic, multi-dimensional picklists.
 
-- Support for multiple columns.
-- Display any text-based content, not just [dates and times](https://github.com/henninghall/react-native-date-picker).
+- Supports multiple columns and sizes.
+- Displays any text-based content, not just [dates and times](https://github.com/henninghall/react-native-date-picker).
 - Works with apps built for [Expo](https://expo.io).
 - Optional native extension available for iOS.
 - Customisable colors and sizing.
