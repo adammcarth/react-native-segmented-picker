@@ -1,8 +1,8 @@
 # Native iOS Picker
 
-Starting from `v2.0.0` and higher, there is an opt-in feature available for iOS which bridges this library with [UIPickerView](https://developer.apple.com/documentation/uikit/uipickerview) instead of using the JavaScript implementation. This extension is _not_ compatible with Expo.
+Starting from `v2.0.0` and higher, there is an opt-in extension available for iOS which bridges this library with [UIPickerView](https://developer.apple.com/documentation/uikit/uipickerview) instead of using the default JavaScript implementation. This feature is _not_ compatible with Expo.
 
-While enabling this feature is not mandatory, the advantages include:
+While enabling the extension is not mandatory, the advantages include:
 
 - Improved list rendering performance.
 - A more realistic "slot machine" animation.

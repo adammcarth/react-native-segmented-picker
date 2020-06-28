@@ -4,13 +4,14 @@
 [![NPM Version](https://img.shields.io/npm/v/react-native-segmented-picker.svg?style=flat-square)](https://www.npmjs.com/package/react-native-segmented-picker)
 [![MIT Licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-A cross platform implementation of the [iOS picker wheel](https://developer.apple.com/documentation/uikit/uipickerview) used for creating dynamic, multi-dimensional picklists in React Native.
+A cross platform implementation of Apple's [iOS picker wheel](https://developer.apple.com/documentation/uikit/uipickerview) which can be used to create dynamic, multi-dimensional picklists in React Native.
 
-- Supports multiple columns with flexible widths.
-- Display any text based content, not just [dates and times](https://github.com/henninghall/react-native-date-picker).
-- Works with apps built on [Expo](https://expo.io).
-- An opt-in native experience is available for iOS.
+- Support for multiple columns.
+- Display any text-based content, not just [dates and times](https://github.com/henninghall/react-native-date-picker).
+- Works with apps built for [Expo](https://expo.io).
+- Optional native extension available for iOS.
 - Customisable colors and sizing.
+- End-to-end (E2E) testing support.
 
 ![Android Example](https://imgkk.com/i/z_da.gif)
 ![iOS Example](https://imgkk.com/i/qk1d.gif)
@@ -23,7 +24,7 @@ $ yarn add react-native-segmented-picker
 # $ npm install --save react-native-segmented-picker
 ```
 
-You may also [setup the native iOS extension](https://github.com/adammcarth/react-native-segmented-picker/tree/master/docs/Native%20iOS.md) at this time, but this is not mandatory.
+You may also [setup the native iOS extension](https://github.com/adammcarth/react-native-segmented-picker/tree/master/docs/Native%20iOS.md) at this time, but it is not mandatory.
 
 ## Usage
 
