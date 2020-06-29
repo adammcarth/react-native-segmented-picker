@@ -4,17 +4,15 @@
 [![NPM Version](https://img.shields.io/npm/v/react-native-segmented-picker.svg?style=flat-square)](https://www.npmjs.com/package/react-native-segmented-picker)
 [![MIT Licence](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-A cross platform implementation of the [iOS picker wheel](https://developer.apple.com/documentation/uikit/uipickerview) used for creating dynamic, multi-dimensional picklists.
+A cross platform implementation of [UIPickerView](https://developer.apple.com/documentation/uikit/uipickerview) for creating dynamic, multi-dimensional picklists.
 
 - Supports multiple columns and sizes.
 - Displays any text-based content, not just [dates and times](https://github.com/henninghall/react-native-date-picker).
 - Works with apps built for [Expo](https://expo.io).
 - Optional native extension available for iOS.
-- Customisable colors and sizing.
-- End-to-end (E2E) testing support.
 
-![Android Example](https://imgkk.com/i/z_da.gif)
-![iOS Example](https://imgkk.com/i/qk1d.gif)
+![Android Example](https://imgkk.com/i/qmfh.gif)
+![iOS Example](https://imgkk.com/i/yqem.gif)
 
 ## Installation
 
@@ -24,7 +22,7 @@ $ yarn add react-native-segmented-picker
 # $ npm install --save react-native-segmented-picker
 ```
 
-You may also [setup the native iOS extension](https://github.com/adammcarth/react-native-segmented-picker/tree/master/docs/Native%20iOS.md) at this time, but it is not mandatory.
+You may also setup the [Native iOS Extension](https://github.com/adammcarth/react-native-segmented-picker/tree/master/docs/Native%20iOS.md) at this time, but this is not mandatory.
 
 ## Usage
 
@@ -45,7 +43,7 @@ class Example extends Component {
 
   onConfirm = (selections) => {
     console.info(selections);
-    // => { "col_1": "option_1", "col_2": "option_3" }
+    // => { col_1: "option_1", col_2: "option_3" }
   }
 
   render() {
@@ -80,28 +78,30 @@ Further examples can be found in [./examples/src](https://github.com/adammcarth/
 
 ### Props
 
-| Prop                         | Description                                                                                           | Default     |
-|------------------------------|-------------------------------------------------------------------------------------------------------|-------------|
-| `options`                    | Data to be populated into the picklists. `{columnId: [{label: '', key?: '', testID?: ''}, ...], ...}` |             |
-| `visible`                    | Not used by default. Set to `true` or `false` to manually handle visibility.                          | `null`      |
-| `defaultSelections`          | Eg: `{columnId: 'label string to auto-select', ...}`                                                  | `{}`        |
-| `confirmText`                | Text displayed in the top right hand corner.                                                          | `'Done'`    |
-| `size`                       | Fixed percentage of the screen to render the picklist container over.                                 | `45`        |
-| `confirmTextColor`           | Color of the `confirmText` button.                                                                    | `'#0A84FF'` |
-| `toolbarBackground`          | Background color of the top container where the `confirmText` is displayed.                           | `'#FAFAF8'` |
-| `toolbarBorderColor`         | Bottom border color of the `toolbarContainer`.                                                        | `'#E7E7E7'` |
-| `listItemTextColor`          | Color of the text for each item in the picklist.                                                      | `'#282828'` |
-| `selectionMarkerBackground`  | Background color of the container which overlays the current selected item.                           | `'#F8F8F8'` |
-| `selectionMarkerBorderColor` | Border color (top and bottom) of the selection marker overlay.                                        | `'#DCDCDC'` |
-| `containerBackground`        | Background color of the inner SegmentedPicker container.                                              | `'#FFFFFF'` |
+| Prop                       | Description                                                                                                                                                              | Default     |
+|----------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------|
+| `visible`                  | Not used by default. Set to `true` or `false` to manually handle visibility.                                                                                             |             |
+| `options`                  | An array of columns: `[{ key: '', flex?: 1, testID?: '', items: [{ label: '', value: '', key?: '', testID?: '' }] }]`                                                    | `[]`        |
+| `defaultSelections`        | Eg: `{column: 'value', ...}`                                                                                                                                             | `{}`        |
+| `native`                   | Use the native UIPickerView component on iOS. Requires [additional setup](https://github.com/adammcarth/react-native-segmented-picker/tree/master/docs/Native%20iOS.md). | `false`     |
+| `nativeTestID`             | Accessibility identifier of the native component for E2E testing.                                                                                                        | `''`        |
+| `size`                     | Floating point between 0 and 1 representing the percentage of screen to take up.                                                                                         | `0.45`      |
+| `confirmText`              | Text displayed in the top right hand corner.                                                                                                                             | `'Done'`    |
+| `confirmTextColor`         | Color of the `confirmText` button.                                                                                                                                       | `'#0A84FF'` |
+| `toolbarBackgroundColor`   | Background color of the top container where the `confirmText` is displayed.                                                                                              | `'#FAFAF8'` |
+| `toolbarBorderColor`       | Bottom border color of the `toolbarContainer`.                                                                                                                           | `'#E7E7E7'` |
+| `pickerItemTextColor`      | Color of the text for each item in the picklist.                                                                                                                         | `'#282828'` |
+| `selectionBackgroundColor` | Background color of the box which shows selected items.                                                                                                                  | `'#F8F8F8'` |
+| `selectionBorderColor`     | Border color (top and bottom) of the selection mask.                                                                                                                     | `'#DCDCDC'` |
+| `backgroundColor`          | Background color of the inner SegmentedPicker container.                                                                                                                 | `'#FFFFFF'` |
 
 ### Event Props
 
-| Event Prop                                 | When and how?                                                                                 |
-|--------------------------------------------|-----------------------------------------------------------------------------------------------|
-| `onValueChange={(columnId, value) => ...}` | Emitted each time a picklist value is modified by a user.                                     |
-| `onCancel={(selections) => ...}`           | Emitted when a user touches out of the modal, or presses the hardware back button on Android. |
-| `onConfirm={(selections) => ...}`          | Emitted when a user presses the confirm text button.                                          |
+| Event Prop                                   | When and how?                                                                                 |
+|----------------------------------------------|-----------------------------------------------------------------------------------------------|
+| `onValueChange={({ column, value }) => ...}` | Emitted each time a picklist value is modified by a user.                                     |
+| `onCancel={(selections) => ...}`             | Emitted when a user touches out of the modal, or presses the hardware back button on Android. |
+| `onConfirm={(selections) => ...}`            | Emitted when a user presses the confirm text button.                                          |                                         |
 
 ### Methods
 
@@ -119,7 +119,7 @@ Hide the Segmented Picker modal from the screen. Generally should not be require
 
 #### ref.selectLabel(label, columnId, animated=true, emitEvent=true, zeroFallback=false);
 
-Programmatically select a label from a list column while the component is displaying.
+Programmatically select a picker item by it's `label` while the component is displaying.
 
 - `{string} label`: Eg 'Option 1'
 - `{string} columnId`: Eg 'column1'
@@ -127,9 +127,13 @@ Programmatically select a label from a list column while the component is displa
 - `{boolean=true} emitEvent`: Specify whether to emit the `onValueChange` event.
 - `{boolean=false} zeroFallback` Select the first list item if not found.
 
+#### ref.selectValue(value, columnId, animated=true, emitEvent=true, zeroFallback=false);
+
+Same as above, except it filters using the `value` of a picker item instead of `label`.
+
 #### ref.selectIndex(index, columnId, animated=true, emitEvent=true);
 
-Programmatically select an array index from a list column while the component is displaying. This method will give you better performance than the above if you already know the index of the item that you want to select.
+Programmatically select an array index from a list column while the component is displaying. This method will give you better performance than the above methods if you already know the index of the item that you want to select.
 
 - `{number} index`: Eg 0
 - `{string} columnId`: Eg 'column1'
@@ -153,10 +157,10 @@ import React, { Component } from 'react';
 import SegmentedPicker from 'react-native-segmented-picker';
 
 const options = {
-  categories: [{ label: 'Fruits' }, { label: 'Vegetables' }],
-  items: {
-    Fruits: [{ label: 'Apples' }, { label: 'Oranges' }],
-    Vegetables: [{ label: 'Carrots' }, { label: 'Potatoes' }],
+  categories: [{ label: 'Fruits', value: 'fruits' }, { label: 'Vegetables', value: 'vegetables' }],
+  foods: {
+    fruits: [{ label: 'Apples', value: 'apples' }, { label: 'Oranges', value: 'oranges' }],
+    vegetables: [{ label: 'Carrots', value: 'carrots', }, { label: 'Potatoes', value: 'potatoes' }],
   },
 };
 
@@ -165,46 +169,97 @@ class Demo extends Component {
     super(props);
     this.state = {
       selections: {
-        categories: options.categories[0],
-        items: undefined,
+        category: options.categories[0].value,
+        food: undefined,
       },
     };
   }
 
-  onValueChange = (columnId, { label }) => {
+  onValueChange = ({ column, value }) => {
     this.setState((prevState) => ({
       selections: {
         ...prevState.selections,
-        [columnId]: label,
+        [column]: value,
       },
     }));
   };
 
   generateOptions = () => {
-    const { categories, items } = options;
+    const { categories, foods } = options;
     const { selections } = this.state;
-    return {
-      categories,
-      items: items[selections.categories],
-    };
+    return [
+      {
+        key: 'category',
+        items: categories,
+      },
+      {
+        key: 'food',
+        items: foods[selections.category],
+      },
+    ];
   };
 
   render() {
-    const { selections: { categories, items } } = this.state;
     return (
       <SegmentedPicker
         options={this.generateOptions()}
         onValueChange={this.onValueChange}
-        defaultSelections={{ categories, items }}
+        defaultSelections={this.state.selections}
       />
     );
   }
 }
 ```
 
-### 2. End-To-End (E2E) Testing
+### 2. Specifying Column Widths
 
-This library automatically sets `testID` attributes on elements so that you can interact with the picker UI during E2E testing (with tools such as [Detox](https://github.com/wix/Detox)).
+You can customise the relative width of picker segments by using `flex` notation in your column data. This integer acts as a ratio - the larger the number, the bigger it grows.
+
+```jsx
+{/* All widths equal (default): */}
+<SegmentedPicker
+  options={[
+    { key: 'col_1', flex: 1, items: [] },
+    { key: 'col_2', flex: 1, items: [] },
+    { key: 'col_3', flex: 1, items: [] },
+  ]}
+/>
+
+{/* Small middle column: */}
+<SegmentedPicker
+  options={[
+    { key: 'col_1', flex: 3, items: [] },
+    { key: 'col_2', flex: 1, items: [] },
+    { key: 'col_3', flex: 3, items: [] },
+  ]}
+/>
+```
+
+### 3. End-To-End (E2E) Testing
+
+This library fully supports E2E testing (using tools such as [Detox](https://github.com/wix/Detox)).
+
+```jsx
+<SegmentedPicker
+  options=[
+    {
+      key: 'col_1',
+      testID: 'col_1',
+      items: [
+        { label: 'Option 1', value: 'option_1', testID: 'col_1_option_1' },
+      ],
+    },
+  ]
+/>
+```
+
+```js
+// Detox Example:
+await expect(element(by.id('col_1'))).toBeVisible();
+await element(by.id('col_1_option_1')).tap();
+```
+
+You can see full examples in our own testing suite [here](https://github.com/adammcarth/react-native-segmented-picker/tree/master/__tests__). Keep in mind there are also a small number of `testID` attributes which are automatically set on fixed elements for your convenience.
 
 ```js
 import { TEST_IDS } from 'react-native-segmented-picker';
@@ -213,10 +268,6 @@ import { TEST_IDS } from 'react-native-segmented-picker';
 - `TEST_IDS.PICKER`: The entire segmented picker container (useful to check if visible).
 - `TEST_IDS.CONFIRM_BUTTON`: "Done" confirmation button in the top right hand corner.
 - `TEST_IDS.CLOSE_AREA`: Darkened area outside of the picker which hides the component when tapped.
-- ``${`TEST_IDS.COLUMN`}columnId``: ScrollView for a specific picker column.
-- ``${`TEST_IDS.COLUMN`}columnId_optionKeyOrLabel``: Specific picker item button within a column.
-
-You can see full examples of our own E2E Detox testing suite [here](https://github.com/adammcarth/react-native-segmented-picker/tree/master/__tests__).
 
 ## Contributions
 
