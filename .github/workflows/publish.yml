@@ -42,9 +42,11 @@ jobs:
       - name: Determine Package Version
         run: |
           echo "::set-env name=PKG_VERSION::$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')"
-      - name: Tag Release (Git)
-        run: git tag v$PKG_VERSION || true
+      - name: Tag Version (Git)
+        id: tag-version
+        run: git tag v$PKG_VERSION || echo "::set-output name=created::false"
       - name: Push Tag
+        if: steps.tag-version.outputs.created != 'false'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -161,6 +163,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-ios-pods-
       - name: Update RNSegmentedPicker Pod (Examples Project)
+        id: update-examples-pod
         run: |
           cd ./examples/ios
           pod update RNSegmentedPicker
@@ -168,8 +171,9 @@ jobs:
           git config --local user.name "GitHub Actions"
           git add Podfile || true
           git add Podfile.lock || true
-          git commit -m "[ci skip] Upgrade Example RNSegmentedPicker Pod Version" || true
+          git commit -m "[ci skip] Upgrade Example RNSegmentedPicker Pod Version" || echo "::set-output name=pushed::false"
       - name: Push Podfile Updates (Examples Project)
+        if: steps.update-examples-pod.outputs.pushed != 'false'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
