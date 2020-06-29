@@ -13,7 +13,7 @@
     "test": "yarn lint && yarn unit-test",
     "build": "rm -rf dist && rollup --config rollup.config.js",
     "e2e-android": "cd examples && yarn install && yarn e2e-android-debug-init && yarn e2e-android-debug --take-screenshots all --record-logs all",
-    "e2e-ios": "cd examples && yarn install && cd ios && pod install && cd ../ && yarn e2e-ios-debug-init && yarn e2e-ios-debug --take-screenshots all --record-logs all"
+    "e2e-ios": "cd examples && yarn install && cd ios && pod update RNSegmentedPicker && pod install && cd ../ && yarn e2e-ios-debug-init && yarn e2e-ios-debug --take-screenshots all --record-logs all"
   },
   "repository": {
     "type": "git",
