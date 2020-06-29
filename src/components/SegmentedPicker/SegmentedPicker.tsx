@@ -752,7 +752,7 @@ export default class SegmentedPicker extends Component<Props, State> {
                             scrollEventThrottle={32}
                             decelerationRate={Platform.select({
                               ios: 1,
-                              android: 0.985,
+                              android: undefined,
                             })}
                             testID={`${columnTestID}`}
                           />

@@ -20,11 +20,11 @@ export default StyleSheet.create({
   // Eliminates border rendering inconsistencies between iOS & Android
   selectionMarkerBorder: {
     width: '100%',
-    height: 0.5,
+    height: Platform.select({ ios: 0.6, android: 0.7 }),
   },
 
   selectionMarker: {
     width: '100%',
-    height: ITEM_HEIGHT - 1,
+    height: ITEM_HEIGHT,
   },
 });

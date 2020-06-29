@@ -55,9 +55,6 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
     if newWindow != nil {
       picker.frame = self.frame
       picker.accessibilityIdentifier = nativeTestIDProp as String
-      DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-        self.renderSelectionMarker()
-      }
     }
   }
 
@@ -170,6 +167,9 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
     forComponent component: Int,
     reusing view: UIView?
   ) -> UIView {
+    if component + 1 == options.count {
+      renderSelectionMarker()
+    }
     pickerView.subviews[1].backgroundColor = UIColor(
       hexString: theme.selectionMarkerBorderColor
     )

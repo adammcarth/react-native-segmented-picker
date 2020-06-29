@@ -59,7 +59,7 @@ class ExampleD extends Component<Props, State> {
           testID: 'room',
           flex: 4,
           items: [
-            { label: 'Red Room', value: 'orange', testID: 'room_red' },
+            { label: 'Red Room', value: 'red', testID: 'room_red' },
             { label: 'Green Room', value: 'green', testID: 'room_green' },
             { label: 'Orange Room', value: 'orange', testID: 'room_orange' },
             { label: 'Blue Room', value: 'blue', testID: 'room_blue' },
