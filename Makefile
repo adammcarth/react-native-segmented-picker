@@ -24,10 +24,14 @@ build:
 install: build
 	@rsync -zrv ${PKG_PATH}/ ${project_root}/node_modules/react-native-segmented-picker \
 		--include 'README.md' \
+		--include 'docs/***' \
 		--include 'LICENSE' \
 		--include 'package.json' \
 		--include 'yarn.lock' \
 		--include 'dist/***' \
+		--include 'ios/***' \
+		--include 'react-native.config.js' \
+		--include 'RNSegmentedPicker.podspec' \
 		--exclude '*'
 	@cd ${project_root}/node_modules/react-native-segmented-picker && yarn install --production
 	@echo "\n\nDone. Package successfully installed to '${project_root}/node_modules'."

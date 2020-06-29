@@ -2,7 +2,7 @@ import React from 'react';
 import { FlatList, Modal } from 'react-native';
 import renderer from 'react-test-renderer';
 import SegmentedPicker from './SegmentedPicker';
-import { TEST_IDS, ANIMATION_TIME } from '../../config/constants';
+import { ANIMATION_TIME } from '../../config/constants';
 
 beforeEach(() => {
   jest.useFakeTimers();
@@ -12,7 +12,7 @@ describe('SegmentedPicker', () => {
   it('Does not automatically display when first rendered.', () => {
     const testRenderer = renderer.create(
       <SegmentedPicker
-        options={{ column1: [] }}
+        options={[]}
       />,
     );
     const testInstance = testRenderer.root;
@@ -25,7 +25,7 @@ describe('SegmentedPicker', () => {
     const testRenderer = renderer.create(
       <SegmentedPicker
         visible
-        options={{ column1: [] }}
+        options={[]}
       />,
     );
     const testInstance = testRenderer.root;
@@ -38,7 +38,7 @@ describe('SegmentedPicker', () => {
     const ref: React.RefObject<SegmentedPicker> = React.createRef();
     const testRenderer = renderer.create(
       <SegmentedPicker
-        options={{ column1: [] }}
+        options={[]}
         ref={ref}
       />,
     );
@@ -56,57 +56,79 @@ describe('SegmentedPicker', () => {
     const testRenderer = renderer.create(
       <SegmentedPicker
         visible
-        options={{
-          column1: [
-            { label: 'Adam' },
-            { label: 'Harry' },
-            { label: 'Francesca' },
-            { label: 'Georgia' },
-          ],
-        }}
+        options={[
+          {
+            key: 'col_1',
+            testID: 'picker_col_1',
+            items: [
+              { label: 'Adam', value: 'adam' },
+              { label: 'Harry', value: 'harry' },
+              { label: 'Francesca', value: 'francesca' },
+              { label: 'Georgia', value: 'georgia' },
+            ],
+          },
+        ]}
       />,
     );
     const testInstance = testRenderer.root;
-    const column1 = testInstance.findByProps({ testID: `${TEST_IDS.COLUMN}column1` });
+    const column1 = testInstance.findByProps({ testID: 'picker_col_1' });
     expect(column1.props.data.length).toEqual(4);
   });
 
-  it('Renders multi-column pickers with default selections.', () => {
+  it('Renders multi-column pickers with default selections.', async () => {
+    const ref: React.RefObject<SegmentedPicker> = React.createRef();
     const testRenderer = renderer.create(
       <SegmentedPicker
+        ref={ref}
         visible
-        options={{
-          column1: [
-            { label: 'Adam' },
-            { label: 'Harry' },
-            { label: 'Francesca' },
-            { label: 'Georgia' },
-          ],
-          column2: [
-            { label: 'Frank' },
-            { label: 'Maddie' },
-            { label: 'Veronica' },
-            { label: 'Matthew' },
-          ],
-          column3: [
-            { label: 'Riley' },
-            { label: 'Hannah' },
-          ],
-          column4: [],
-        }}
+        options={[
+          {
+            key: 'col_1',
+            testID: 'picker_col_1',
+            items: [
+              { label: 'Adam', value: 'adam' },
+              { label: 'Harry', value: 'harry' },
+              { label: 'Francesca', value: 'francesca' },
+              { label: 'Georgia', value: 'georgia' },
+            ],
+          },
+          {
+            key: 'col_2',
+            testID: 'picker_col_2',
+            items: [
+              { label: 'Frank', value: 'frank' },
+              { label: 'Maddie', value: 'maddie' },
+              { label: 'Veronica', value: 'veronica' },
+              { label: 'Matthew', value: 'matthew' },
+            ],
+          },
+          {
+            key: 'col_3',
+            testID: 'picker_col_3',
+            items: [
+              { label: 'Riley', value: 'riley' },
+              { label: 'Hannah', value: 'hannah' },
+            ],
+          },
+          {
+            key: 'col_4',
+            testID: 'picker_col_4',
+            items: [],
+          },
+        ]}
         defaultSelections={{
-          column1: 'Francesca',
-          column2: 'Veronica',
-          column3: 'Missing labels should be ignored!',
-          // column4 intentionally omitted
+          col_1: 'francesca',
+          col_2: 'veronica',
+          col_3: 'Missing labels should be ignored!',
+          // col_4 intentionally omitted
         }}
       />,
     );
     const testInstance = testRenderer.root;
-    const column1 = testInstance.findByProps({ testID: `${TEST_IDS.COLUMN}column1` });
-    const column2 = testInstance.findByProps({ testID: `${TEST_IDS.COLUMN}column2` });
-    const column3 = testInstance.findByProps({ testID: `${TEST_IDS.COLUMN}column3` });
-    const column4 = testInstance.findByProps({ testID: `${TEST_IDS.COLUMN}column4` });
+    const column1 = testInstance.findByProps({ testID: 'picker_col_1' });
+    const column2 = testInstance.findByProps({ testID: 'picker_col_2' });
+    const column3 = testInstance.findByProps({ testID: 'picker_col_3' });
+    const column4 = testInstance.findByProps({ testID: 'picker_col_4' });
     expect(column1.props.data.length).toEqual(4);
     expect(column2.props.data.length).toEqual(4);
     expect(column3.props.data.length).toEqual(2);
@@ -114,17 +136,19 @@ describe('SegmentedPicker', () => {
   });
 
   it('Sets the react "key" of list items correctly', () => {
-    const column1 = 'column1';
-    const listData = {
-      [column1]: [
-        { label: 'Adam' },
-        { label: 'Francesca', key: 'fran' },
+    const COL_1 = 'col_1';
+    const column = {
+      key: COL_1,
+      testID: `picker_${COL_1}`,
+      items: [
+        { label: 'Adam', value: 'adam' },
+        { label: 'Francesca', value: 'francesca', key: 'fran' },
       ],
     };
     const testRenderer = renderer.create(
       <SegmentedPicker
         visible
-        options={listData}
+        options={[column]}
       />,
     );
     const testInstance = testRenderer.root;
@@ -132,9 +156,9 @@ describe('SegmentedPicker', () => {
       props: { data, keyExtractor: listItemKeyExtractor },
     } = testInstance.findByType(FlatList);
     expect(listItemKeyExtractor(data[0]))
-      .toBe(`${TEST_IDS.COLUMN}${column1}_${listData[column1][0].label}`);
+      .toBe(`${COL_1}_${column.items[0].label}`);
     expect(listItemKeyExtractor(data[1]))
-      .toBe(`${TEST_IDS.COLUMN}${column1}_${listData[column1][1].key}`);
+      .toBe(`${COL_1}_${column.items[1].key}`);
   });
 
   it('Can switch selected items by label name.', () => {
@@ -144,24 +168,63 @@ describe('SegmentedPicker', () => {
       <SegmentedPicker
         ref={ref}
         visible
-        options={{
-          column1: [
-            { label: 'Adam' },
-            { label: 'Harry' },
-            { label: 'Francesca' },
-            { label: 'Georgia' },
-          ],
-        }}
+        options={[
+          {
+            key: 'col_1',
+            testID: 'picker_col_1',
+            items: [
+              { label: 'Adam', value: 'adam' },
+              { label: 'Harry', value: 'harry' },
+              { label: 'Francesca', value: 'francesca' },
+              { label: 'Georgia', value: 'georgia' },
+            ],
+          },
+        ]}
         onValueChange={onChangeCallback}
       />,
     );
     jest.advanceTimersByTime(ANIMATION_TIME);
-    ref.current.selectLabel('Adam', 'column1'); // <-- already selected
+    ref.current.selectLabel('Adam', 'col_1'); // <-- already selected
     expect(onChangeCallback).not.toBeCalled();
-    ref.current.selectLabel('Harry', 'column1');
+    ref.current.selectLabel('Harry', 'col_1');
     expect(onChangeCallback).toBeCalledTimes(1);
-    expect(onChangeCallback.mock.calls[0][0]).toBe('column1');
-    expect(onChangeCallback.mock.calls[0][1].label).toBe('Harry');
+    expect(onChangeCallback.mock.calls[0][0]).toStrictEqual({
+      column: 'col_1',
+      value: 'harry',
+    });
+  });
+
+  it('Can switch selected items by value.', () => {
+    const ref: React.RefObject<SegmentedPicker> = React.createRef();
+    const onChangeCallback = jest.fn();
+    renderer.create(
+      <SegmentedPicker
+        ref={ref}
+        visible
+        options={[
+          {
+            key: 'col_1',
+            testID: 'picker_col_1',
+            items: [
+              { label: 'Adam', value: 'adam' },
+              { label: 'Harry', value: 'harry' },
+              { label: 'Francesca', value: 'francesca' },
+              { label: 'Georgia', value: 'georgia' },
+            ],
+          },
+        ]}
+        onValueChange={onChangeCallback}
+      />,
+    );
+    jest.advanceTimersByTime(ANIMATION_TIME);
+    ref.current.selectValue('adam', 'col_1'); // <-- already selected
+    expect(onChangeCallback).not.toBeCalled();
+    ref.current.selectValue('francesca', 'col_1');
+    expect(onChangeCallback).toBeCalledTimes(1);
+    expect(onChangeCallback.mock.calls[0][0]).toStrictEqual({
+      column: 'col_1',
+      value: 'francesca',
+    });
   });
 
   it('Can switch selected items by list index.', () => {
@@ -171,22 +234,28 @@ describe('SegmentedPicker', () => {
       <SegmentedPicker
         ref={ref}
         visible
-        options={{
-          column1: [
-            { label: 'Adam' },
-            { label: 'Harry' },
-            { label: 'Francesca' },
-            { label: 'Georgia' },
-          ],
-        }}
+        options={[
+          {
+            key: 'col_1',
+            testID: 'picker_col_1',
+            items: [
+              { label: 'Adam', value: 'adam' },
+              { label: 'Harry', value: 'harry' },
+              { label: 'Francesca', value: 'francesca' },
+              { label: 'Georgia', value: 'georgia' },
+            ],
+          },
+        ]}
         onValueChange={onChangeCallback}
       />,
     );
-    ref.current.selectIndex(0, 'column1'); // <-- already selected
+    ref.current.selectIndex(0, 'col_1'); // <-- already selected
     expect(onChangeCallback).not.toBeCalled();
-    ref.current.selectIndex(3, 'column1');
+    ref.current.selectIndex(3, 'col_1');
     expect(onChangeCallback).toBeCalledTimes(1);
-    expect(onChangeCallback.mock.calls[0][0]).toBe('column1');
-    expect(onChangeCallback.mock.calls[0][1].label).toBe('Georgia');
+    expect(onChangeCallback.mock.calls[0][0]).toStrictEqual({
+      column: 'col_1',
+      value: 'georgia',
+    });
   });
 });

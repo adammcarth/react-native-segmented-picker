@@ -6,6 +6,7 @@ module.exports = {
     'detox/detox': true,
   },
   rules: {
+    'no-console': 0,
     'jest/consistent-test-it': [
       'error',
       {

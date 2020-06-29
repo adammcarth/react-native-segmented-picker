@@ -7,7 +7,6 @@ const {
   PICKER,
   CONFIRM_BUTTON,
   CLOSE_AREA,
-  COLUMN,
 } = TEST_IDS;
 
 const SELECTIONS = 'SEGMENTED_PICKER_SELECTIONS';
@@ -30,12 +29,12 @@ describe('1 Column <SegmentedPicker />', () => {
     await expect(element(by.id(PICKER))).toBeNotVisible();
     await pause(500);
     const selections = decodeJson(await getText(element(by.id(SELECTIONS))));
-    jestExpect(selections.column1).not.toBeDefined();
+    jestExpect(selections.col_1).not.toBeDefined();
   });
 
   test('Updates the selection and sets a default value on re-open', async () => {
     const OPEN_BUTTON = 'EXAMPLE_A_1_COL';
-    const COL_1 = `${COLUMN}column1`;
+    const COL_1 = 'col_1';
     let selections;
     await expect(element(by.id(OPEN_BUTTON))).toBeVisible();
     await element(by.id(OPEN_BUTTON)).tap();
@@ -45,7 +44,7 @@ describe('1 Column <SegmentedPicker />', () => {
     await expect(element(by.id(PICKER))).toBeNotVisible();
     await pause(500);
     selections = decodeJson((await getText(element(by.id(SELECTIONS)))));
-    jestExpect(selections.column1.label).toEqual('Option 2');
+    jestExpect(selections[COL_1]).toEqual('option_2');
 
     await element(by.id(OPEN_BUTTON)).tap();
     await expect(element(by.id(COL_1))).toBeVisible();
@@ -54,7 +53,7 @@ describe('1 Column <SegmentedPicker />', () => {
     await expect(element(by.id(PICKER))).toBeNotVisible();
     await pause(500);
     selections = decodeJson((await getText(element(by.id(SELECTIONS)))));
-    jestExpect(selections.column1.label).toEqual('Option 2');
+    jestExpect(selections[COL_1]).toEqual('option_2');
 
     await element(by.id(OPEN_BUTTON)).tap();
     await expect(element(by.id(COL_1))).toBeVisible();
@@ -63,7 +62,7 @@ describe('1 Column <SegmentedPicker />', () => {
     await expect(element(by.id(PICKER))).toBeNotVisible();
     await pause(500);
     selections = decodeJson((await getText(element(by.id(SELECTIONS)))));
-    jestExpect(selections.column1.label).toEqual('Option 5');
+    jestExpect(selections[COL_1]).toEqual('option_5');
 
     await element(by.id(OPEN_BUTTON)).tap();
     await expect(element(by.id(COL_1))).toBeVisible();
@@ -71,17 +70,17 @@ describe('1 Column <SegmentedPicker />', () => {
 
   test('Tap a picker item (instead of scrolling) to set the value', async () => {
     const OPEN_BUTTON = 'EXAMPLE_A_1_COL';
-    const COL_1 = `${COLUMN}column1`;
+    const COL_1 = 'col_1';
     await expect(element(by.id(OPEN_BUTTON))).toBeVisible();
     await element(by.id(OPEN_BUTTON)).tap();
     await expect(element(by.id(COL_1))).toBeVisible();
-    await element(by.id(`${COL_1}_Option 3`)).tap();
+    await element(by.id(`${COL_1}_option_3`)).tap();
     await pause(1000);
     await element(by.id(CONFIRM_BUTTON)).tap();
     await expect(element(by.id(PICKER))).toBeNotVisible();
     await pause(500);
     const selections = decodeJson(await getText(element(by.id(SELECTIONS))));
-    jestExpect(selections.column1.label).toEqual('Option 3');
+    jestExpect(selections[COL_1]).toEqual('option_3');
 
     await element(by.id(OPEN_BUTTON)).tap();
     await expect(element(by.id(COL_1))).toBeVisible();

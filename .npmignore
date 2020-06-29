@@ -1,5 +1,10 @@
 **/*
 !package.json
 !README.md
+!docs/**/*
 !LICENSE
 !dist/**/*
+!ios/**/*
+!react-native.config.js
+!RNSegmentedPicker.podspec
+.DS_STORE

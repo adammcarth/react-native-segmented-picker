@@ -13,8 +13,19 @@ import {
 import * as Animatable from 'react-native-animatable';
 import { defaultProps, propTypes } from './SegmentedPickerPropTypes';
 import styles from './SegmentedPickerStyles';
+import Toolbar from '../Toolbar';
+import SelectionMarker from '../SelectionMarker';
+import UIPicker from '../UIPicker';
 import Cache from '../../services/Cache';
-import { PickerItem, PickerOptions, Selections } from '../../config/interfaces';
+import UIPickerManager from '../../services/UIPickerManager';
+import {
+  PickerColumn,
+  PickerItem,
+  PickerOptions,
+  Selections,
+  SelectionEvent,
+  UIPickerValueChangeEvent,
+} from '../../config/interfaces';
 import {
   ANIMATION_TIME,
   GUTTER_HEIGHT,
@@ -35,25 +46,25 @@ const {
 } = TRACKING;
 
 export interface Props {
+  native: boolean;
   options: PickerOptions;
   visible: boolean;
-  defaultSelections: {
-    [column: string]: string;
-  };
+  defaultSelections: Selections;
   size: number;
   confirmText: string;
+  nativeTestID: string;
   // Styling
   confirmTextColor: string;
-  listItemTextColor: string;
-  toolbarBackground: string;
+  pickerItemTextColor: string;
+  toolbarBackgroundColor: string;
   toolbarBorderColor: string;
-  selectionMarkerBackground: string;
-  selectionMarkerBorderColor: string;
-  containerBackground: string;
+  selectionBackgroundColor: string;
+  selectionBorderColor: string;
+  backgroundColor: string;
   // Events
-  onValueChange: (column: string, value: PickerItem) => void;
-  onCancel: (currentSelections: Selections) => void,
-  onConfirm: (currentSelections: Selections) => void,
+  onValueChange: (event: SelectionEvent) => void;
+  onCancel: (event: Selections) => void,
+  onConfirm: (event: Selections) => void,
 }
 
 interface State {
@@ -70,7 +81,21 @@ export default class SegmentedPicker extends Component<Props, State> {
   static propTypes = propTypes;
   static defaultProps = defaultProps as Partial<Props>;
 
+  /**
+   * @static
+   * Decorates the `options` prop with necessary defaults for missing values.
+   * @param options {PickerOptions}
+   * @return {PickerOptions}
+   */
+  static ApplyPickerOptionDefaults = (options: PickerOptions): PickerOptions => (
+    options.map(column => ({
+      ...column,
+      flex: column.flex || 1,
+    }))
+  );
+
   cache: Cache = new Cache(); // Used as an internal synchronous state (fast)
+  uiPickerManager: UIPickerManager = new UIPickerManager();
   selectionChanges: Selections = {};
   modalContainerRef: React.RefObject<any> = React.createRef();
   pickerContainerRef: React.RefObject<any> = React.createRef();
@@ -81,9 +106,6 @@ export default class SegmentedPicker extends Component<Props, State> {
       visible: false,
       pickersHeight: 0,
     };
-    if (!props.options) {
-      throw new Error('<SegmentedPicker /> cannot render without the `options` prop.');
-    }
   }
 
   /**
@@ -113,10 +135,11 @@ export default class SegmentedPicker extends Component<Props, State> {
   /**
    * Make the picker visible on the screen.
    * External Usage: `ref.current.show()`
-   * @return {void}
+   * @return {Promise<void>}
    */
-  show = (): void => {
+  show = (): Promise<void> => {
     this.setState({ visible: true });
+    return new Promise(resolve => setTimeout(resolve, ANIMATION_TIME));
   };
 
   /**
@@ -143,7 +166,7 @@ export default class SegmentedPicker extends Component<Props, State> {
   );
 
   /**
-   * Selects a specific label in the picklist and focuses it.
+   * Selects a specific picker item `label` in the picklist and focuses it.
    * External Usage: `ref.current.selectLabel()`
    * @param {string} label
    * @param {string} column
@@ -159,11 +182,35 @@ export default class SegmentedPicker extends Component<Props, State> {
     emitEvent: boolean = true,
     zeroFallback: boolean = false,
   ): void => {
-    const { options } = this.props;
-    const index = this.findOptionIndex(label, column);
+    const index = this.findItemIndexByLabel(label, column);
     if (index !== -1) {
       this.selectIndex(index, column, animated, emitEvent);
-    } else if (options[column].length > 0 && zeroFallback) {
+    } else if (this.columnItems(column).length > 0 && zeroFallback) {
+      this.selectIndex(0, column, animated, emitEvent);
+    }
+  };
+
+  /**
+   * Selects a specific picker item `value` in the picklist and focuses it.
+   * External Usage: `ref.current.selectValue()`
+   * @param {string} value
+   * @param {string} column
+   * @param {boolean = true} animated
+   * @param {boolean = true} emitEvent: Specify whether to call the `onValueChange` event.
+   * @param {boolean = false} zeroFallback: Select the first list item if not found.
+   * @return {void}
+   */
+  selectValue = (
+    value: string,
+    column: string,
+    animated: boolean = true,
+    emitEvent: boolean = true,
+    zeroFallback: boolean = false,
+  ): void => {
+    const index = this.findItemIndexByValue(value, column);
+    if (index !== -1) {
+      this.selectIndex(index, column, animated, emitEvent);
+    } else if (this.columnItems(column).length > 0 && zeroFallback) {
       this.selectIndex(0, column, animated, emitEvent);
     }
   };
@@ -183,7 +230,11 @@ export default class SegmentedPicker extends Component<Props, State> {
     animated: boolean = true,
     emitEvent: boolean = true,
   ): void => {
-    const { options, onValueChange } = this.props;
+    if (this.isNative()) {
+      this.uiPickerManager.selectIndex(index, column, animated);
+      return;
+    }
+    const { onValueChange } = this.props;
     const list = this.cache.get(`${FLAT_LIST_REF}${column}`);
     if (!list) {
       return;
@@ -192,39 +243,73 @@ export default class SegmentedPicker extends Component<Props, State> {
       index,
       animated,
     });
+    const items = this.columnItems(column);
     if (!this.selectionChanges[column]
       || (this.selectionChanges[column]
-        && this.selectionChanges[column].label !== options[column][index].label)
+        && this.selectionChanges[column] !== items[index].value)
     ) {
       this.selectionChanges = {
         ...this.selectionChanges,
-        [column]: options[column][index],
+        [column]: items[index].value,
       };
       if (emitEvent) {
-        onValueChange(column, options[column][index]);
+        onValueChange({ column, value: items[index].value });
       }
     }
   };
 
   /**
    * Returns the current picklist selections as they appear on the UI.
-   * External Usage: `ref.current.getCurrentSelections()`
-   * @return {Selections} {column1: {}, column2: {}, ...}
+   * External Usage: `await ref.current.getCurrentSelections()`
+   * @return {Promise<Selections>} {column1: 'value', column2: 'value', ...}
    */
-  getCurrentSelections = (): Selections => {
+  getCurrentSelections = async (): Promise<Selections> => {
+    if (this.isNative()) {
+      const nativeSelections = await this.uiPickerManager.getCurrentSelections();
+      return nativeSelections;
+    }
     const { options } = this.props;
-    return Object.keys(options).reduce((columns, column) => {
-      const lastOffset = this.cache.get(`${LAST_SCROLL_OFFSET}${column}`);
-      const index = this.nearestOptionIndex(
-        lastOffset || 0,
-        column,
-      );
-      return {
-        ...columns,
-        [column]: options[column][index],
-      };
-    }, {});
+    return Promise.resolve(
+      options.reduce((columns, column) => {
+        const lastOffset = this.cache.get(`${LAST_SCROLL_OFFSET}${column.key}`);
+        const index = this.nearestOptionIndex(
+          lastOffset || 0,
+          column.key,
+        );
+        const items = this.columnItems(column.key);
+        return {
+          ...columns,
+          [column.key]: items[index]?.value,
+        };
+      }, {}),
+    );
   };
+
+  /**
+   * @private
+   * Should the picker be powered by a native module, or with plain JavaScript?
+   * Currently only available as an opt-in option for iOS devices.
+   * @return {boolean}
+   */
+  private isNative = (): boolean => (
+    this.props.native && Platform.OS === 'ios'
+  );
+
+  /**
+   * Filters the `options` prop for a specific column `key`.
+   * @param {string} key
+   * @return {PickerColumn}
+   */
+  private getColumn = (key: string): PickerColumn => (
+    this.props.options.filter(c => c.key === key)[0]
+  );
+
+  /**
+   * Returns the picker list items for a specific column `key`.
+   * @param {string} key
+   * @return {Array<PickerItem>}
+   */
+  private columnItems = (key: string): Array<PickerItem> => this.getColumn(key)?.items || [];
 
   /**
    * @private
@@ -232,10 +317,23 @@ export default class SegmentedPicker extends Component<Props, State> {
    * @param {string} column
    * @return {number}
    */
-  private findOptionIndex = (label: string, column: string): number => {
-    const { options } = this.props;
-    return options[column].findIndex(option => (
-      option.label === label
+  private findItemIndexByLabel = (label: string, column: string): number => {
+    const items = this.columnItems(column);
+    return items.findIndex(item => (
+      item.label === label
+    ));
+  };
+
+  /**
+   * @private
+   * @param {string} value
+   * @param {string} column
+   * @return {number}
+   */
+  private findItemIndexByValue = (value: string, column: string): number => {
+    const items = this.columnItems(column);
+    return items.findIndex(item => (
+      item.value === value
     ));
   };
 
@@ -251,7 +349,7 @@ export default class SegmentedPicker extends Component<Props, State> {
       // User defined default selections
       Object.keys(defaultSelections)
         .forEach(column => (
-          this.selectLabel(
+          this.selectValue(
             defaultSelections[column],
             column,
             false,
@@ -260,13 +358,13 @@ export default class SegmentedPicker extends Component<Props, State> {
           )
         ));
       // Set all other selections to index 0
-      Object.keys(options)
+      options
         .filter(column => (
-          !Object.keys(defaultSelections).includes(column)
-          && options[column].length > 0
+          !Object.keys(defaultSelections).includes(column.key)
+          && this.columnItems(column.key).length > 0
         ))
         .forEach(column => (
-          this.selectIndex(0, column, false, false)
+          this.selectIndex(0, column.key, false, false)
         ));
     }
   };
@@ -314,7 +412,6 @@ export default class SegmentedPicker extends Component<Props, State> {
    * @return {number}
    */
   private nearestOptionIndex = (offsetY: number, column: string): number => {
-    const { options } = this.props;
     const scrollDirection = this.cache.get(`${SCROLL_DIRECTION}${column}`) || 1;
     const rounding = (scrollDirection === 0) ? 'floor' : 'ceil';
     const adjustedOffsetY = (scrollDirection === 0) ? (
@@ -324,7 +421,7 @@ export default class SegmentedPicker extends Component<Props, State> {
     );
     let nearestArrayMember = Math[rounding](adjustedOffsetY) || 0;
     // Safety checks making sure we don't return an out of range index
-    const columnSize = Object.keys(options[column]).length;
+    const columnSize = this.columnItems(column).length;
     if (Math.sign(nearestArrayMember) === -1) {
       nearestArrayMember = 0;
     } else if (nearestArrayMember > columnSize - 1) {
@@ -448,7 +545,7 @@ export default class SegmentedPicker extends Component<Props, State> {
    * @return {Promise<void>}
    */
   private onCancel = async (): Promise<void> => {
-    const selections = { ...this.getCurrentSelections() };
+    const selections = { ...(await this.getCurrentSelections()) };
     if (this.props.visible !== true) {
       await this.hide();
     }
@@ -462,7 +559,7 @@ export default class SegmentedPicker extends Component<Props, State> {
    * @return {Promise<void>}
    */
   private onConfirm = async (): Promise<void> => {
-    const selections = { ...this.getCurrentSelections() };
+    const selections = { ...(await this.getCurrentSelections()) };
     if (this.props.visible !== true) {
       await this.hide();
     }
@@ -486,7 +583,7 @@ export default class SegmentedPicker extends Component<Props, State> {
     item: RenderablePickerItem;
     index: number;
   }): ReactElement => {
-    const { listItemTextColor } = this.props;
+    const { pickerItemTextColor } = this.props;
     return (
       <View style={styles.pickerItem}>
         <TouchableOpacity
@@ -494,7 +591,10 @@ export default class SegmentedPicker extends Component<Props, State> {
           onPress={() => this.selectIndex(index, column)}
           testID={testID || key}
         >
-          <Text style={[styles.pickerItemText, { color: listItemTextColor }]}>
+          <Text
+            numberOfLines={1}
+            style={[styles.pickerItemText, { color: pickerItemTextColor }]}
+          >
             {label}
           </Text>
         </TouchableOpacity>
@@ -502,18 +602,35 @@ export default class SegmentedPicker extends Component<Props, State> {
     );
   };
 
+  /**
+   * @private
+   * Forwards value changes onto the client from the Native iOS UIPicker when it is in use
+   * over the default JavaScript picker implementation.
+   * @param {UIPickerValueChangeEvent}
+   * @return {void}
+   */
+  private uiPickerValueChange = (
+    { nativeEvent: { column, value } }: UIPickerValueChangeEvent,
+  ): void => {
+    const { onValueChange } = this.props;
+    onValueChange({ column, value });
+  };
+
   render() {
     const { visible } = this.state;
     const {
+      nativeTestID,
       options,
+      defaultSelections,
       size,
       confirmText,
       confirmTextColor,
-      toolbarBackground,
+      pickerItemTextColor,
+      toolbarBackgroundColor,
       toolbarBorderColor,
-      selectionMarkerBackground,
-      selectionMarkerBorderColor,
-      containerBackground,
+      selectionBackgroundColor,
+      selectionBorderColor,
+      backgroundColor,
     } = this.props;
 
     return (
@@ -536,7 +653,7 @@ export default class SegmentedPicker extends Component<Props, State> {
           testID={TEST_IDS.PICKER}
         >
           <TouchableWithoutFeedback onPress={this.onCancel} testID={TEST_IDS.CLOSE_AREA}>
-            <View style={[styles.closeableContainer, { height: `${(100 - size)}%` }]} />
+            <View style={[styles.closeableContainer, { height: `${(100 - (size * 100))}%` }]} />
           </TouchableWithoutFeedback>
 
           <Animatable.View
@@ -549,99 +666,102 @@ export default class SegmentedPicker extends Component<Props, State> {
             delay={100}
             duration={ANIMATION_TIME}
             ref={this.pickerContainerRef}
-            style={[
-              styles.pickerContainer,
-              {
-                height: `${size}%`,
-                backgroundColor: containerBackground,
-              },
-            ]}
+            style={[styles.pickerContainer, { height: `${size * 100}%`, backgroundColor }]}
           >
-            <View
-              style={[
-                styles.toolbarContainer,
-                {
-                  backgroundColor: toolbarBackground,
-                  borderBottomColor: toolbarBorderColor,
-                },
-              ]}
-            >
-              <TouchableOpacity
-                activeOpacity={0.4}
-                onPress={this.onConfirm}
-                testID={TEST_IDS.CONFIRM_BUTTON}
-              >
-                <View style={styles.toolbarConfirmContainer}>
-                  <Text style={[styles.toolbarConfirmText, { color: confirmTextColor }]}>
-                    {confirmText}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+            <Toolbar
+              confirmText={confirmText}
+              confirmTextColor={confirmTextColor}
+              toolbarBackground={toolbarBackgroundColor}
+              toolbarBorderColor={toolbarBorderColor}
+              onConfirm={this.onConfirm}
+            />
 
-            <View style={styles.pickers} onLayout={this.measurePickersHeight}>
-              {Object.keys(options).map(column => (
-                <View style={styles.pickerColumn} key={`${TEST_IDS.COLUMN}${column}`}>
-                  <View style={styles.selectionMarkerContainer}>
-                    <View
-                      style={[
-                        styles.selectionMarkerBorder,
-                        { backgroundColor: selectionMarkerBorderColor },
-                      ]}
-                    />
-                    <View
-                      style={[
-                        styles.selectionMarker,
-                        { backgroundColor: selectionMarkerBackground },
-                      ]}
-                    />
-                    <View
-                      style={[
-                        styles.selectionMarkerBorder,
-                        { backgroundColor: selectionMarkerBorderColor },
-                      ]}
-                    />
-                  </View>
-
-                  <View style={styles.pickerList}>
-                    <FlatList
-                      data={options[column].map(({ label, key, testID }) => ({
-                        label,
-                        column,
-                        testID,
-                        key: `${TEST_IDS.COLUMN}${column}_${key || label}`,
-                      }))}
-                      renderItem={this.renderPickerItem}
-                      keyExtractor={item => item.key}
-                      initialNumToRender={40}
-                      getItemLayout={(data, index) => (
-                        {
-                          length: ITEM_HEIGHT,
-                          offset: ITEM_HEIGHT * index,
-                          index,
-                        }
-                      )}
-                      contentContainerStyle={{
-                        paddingTop: this.pickersVerticalPadding(),
-                        paddingBottom: this.pickersVerticalPadding(),
-                      }}
-                      showsVerticalScrollIndicator={false}
-                      ref={ref => this.setFlatListRef(column, ref)}
-                      onScroll={event => this.onScroll(event, column)}
-                      onScrollBeginDrag={() => this.onScrollBeginDrag(column)}
-                      onScrollEndDrag={event => this.onScrollEndDrag(event, column)}
-                      onMomentumScrollBegin={event => this.onMomentumScrollBegin(event, column)}
-                      onMomentumScrollEnd={event => this.onMomentumScrollEnd(event, column)}
-                      scrollEventThrottle={32}
-                      decelerationRate={Platform.select({
-                        ios: 0.993999,
-                        android: 0.985,
-                      })}
-                      testID={`${TEST_IDS.COLUMN}${column}`}
-                    />
-                  </View>
+            <View style={styles.selectableArea}>
+              {/* Native iOS Picker is enabled */}
+              {this.isNative() && (
+                <View style={styles.nativePickerContainer}>
+                  <UIPicker
+                    ref={this.uiPickerManager.reactRef}
+                    nativeTestID={nativeTestID}
+                    style={styles.nativePicker}
+                    options={SegmentedPicker.ApplyPickerOptionDefaults(options)}
+                    defaultSelections={defaultSelections}
+                    onValueChange={this.uiPickerValueChange}
+                    onEmitSelections={this.uiPickerManager.ingestSelections}
+                    theme={{
+                      itemHeight: ITEM_HEIGHT,
+                      selectionBackgroundColor,
+                      selectionBorderColor,
+                      pickerItemTextColor,
+                    }}
+                  />
                 </View>
-              ))}
+              )}
+
+              {/* Plain JavaScript implementation (default) */}
+              {!this.isNative() && (
+                <>
+                  <SelectionMarker
+                    backgroundColor={selectionBackgroundColor}
+                    borderColor={selectionBorderColor}
+                  />
+                  <View style={styles.pickerColumns} onLayout={this.measurePickersHeight}>
+                    {SegmentedPicker.ApplyPickerOptionDefaults(options).map((
+                      { key: column, testID: columnTestID, flex },
+                    ) => (
+                      <View style={[styles.pickerColumn, { flex }]} key={`${column}`}>
+                        <View style={styles.pickerList}>
+                          <FlatList
+                            data={this.columnItems(column).map(({
+                              label,
+                              value,
+                              key,
+                              testID,
+                            }) => ({
+                              label,
+                              value,
+                              column,
+                              testID,
+                              key: `${column}_${key || label}`,
+                            }))}
+                            renderItem={this.renderPickerItem}
+                            keyExtractor={item => item.key}
+                            initialNumToRender={40}
+                            getItemLayout={(data, index) => (
+                              {
+                                length: ITEM_HEIGHT,
+                                offset: ITEM_HEIGHT * index,
+                                index,
+                              }
+                            )}
+                            contentContainerStyle={{
+                              paddingTop: this.pickersVerticalPadding(),
+                              paddingBottom: this.pickersVerticalPadding(),
+                            }}
+                            showsVerticalScrollIndicator={false}
+                            ref={ref => this.setFlatListRef(column, ref)}
+                            onScroll={event => this.onScroll(event, column)}
+                            onScrollBeginDrag={() => this.onScrollBeginDrag(column)}
+                            onScrollEndDrag={event => this.onScrollEndDrag(event, column)}
+                            onMomentumScrollBegin={event => (
+                              this.onMomentumScrollBegin(event, column)
+                            )}
+                            onMomentumScrollEnd={event => (
+                              this.onMomentumScrollEnd(event, column)
+                            )}
+                            scrollEventThrottle={32}
+                            decelerationRate={Platform.select({
+                              ios: 1,
+                              android: undefined,
+                            })}
+                            testID={`${columnTestID}`}
+                          />
+                        </View>
+                      </View>
+                    ))}
+                  </View>
+                </>
+              )}
             </View>
           </Animatable.View>
         </Animatable.View>
