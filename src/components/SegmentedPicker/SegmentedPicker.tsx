@@ -346,26 +346,29 @@ export default class SegmentedPicker extends Component<Props, State> {
     const { options, defaultSelections } = this.props;
     const dirty = this.cache.get(IS_DIRTY);
     if (!dirty) {
-      // User defined default selections
-      Object.keys(defaultSelections)
-        .forEach(column => (
-          this.selectValue(
-            defaultSelections[column],
-            column,
-            false,
-            false,
-            true,
-          )
-        ));
-      // Set all other selections to index 0
-      options
-        .filter(column => (
-          !Object.keys(defaultSelections).includes(column.key)
-          && this.columnItems(column.key).length > 0
-        ))
-        .forEach(column => (
-          this.selectIndex(0, column.key, false, false)
-        ));
+      setTimeout(() => {
+        // User defined default selections
+        Object.keys(defaultSelections)
+          .forEach(column => (
+            this.selectValue(
+              defaultSelections[column],
+              column,
+              false,
+              false,
+              true,
+            )
+          ));
+
+        // Set all other selections to index 0
+        options
+          .filter(column => (
+            !Object.keys(defaultSelections).includes(column.key)
+            && this.columnItems(column.key).length > 0
+          ))
+          .forEach(column => (
+            this.selectIndex(0, column.key, false, false)
+          ));
+      }, 0);
     }
   };
 
