@@ -1,8 +1,6 @@
 name: E2E Tests
 
-on:
-  pull_request:
-    types: [opened, reopened]
+on: [workflow_dispatch]
 
 jobs:
   android-e2e:
