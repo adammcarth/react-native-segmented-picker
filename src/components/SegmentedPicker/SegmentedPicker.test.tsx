@@ -249,6 +249,7 @@ describe('SegmentedPicker', () => {
         onValueChange={onChangeCallback}
       />,
     );
+    jest.advanceTimersByTime(ANIMATION_TIME);
     ref.current.selectIndex(0, 'col_1'); // <-- already selected
     expect(onChangeCallback).not.toBeCalled();
     ref.current.selectIndex(3, 'col_1');

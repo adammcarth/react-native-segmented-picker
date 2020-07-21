@@ -24,7 +24,7 @@
     "react-native": "0.61.2"
   },
   "peerDependencies": {
-    "react-native-segmented-picker": "1.1.0"
+    "react-native-segmented-picker": "2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",
