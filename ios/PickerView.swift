@@ -65,12 +65,16 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
    * @return {Void}
    */
   func parseOptionsProp() -> Void {
+    let selections = getCurrentSelectionIndexes()
     options.removeAll()
     for column in optionsProp {
       options += [PickerColumn(column: column)]
     }
-    applyDefaultSelections()
-    triggerListUpdate()
+    if (self.defaultSelectionsApplied == false) {
+      applyDefaultSelections()
+    } else {
+      triggerListUpdate(previousSelections: selections)
+    }
   }
 
   /**
@@ -80,8 +84,7 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
    */
   func applyDefaultSelections() -> Void {
     if (
-      self.defaultSelectionsApplied == false
-      && self.defaultSelectionsProp.count > 0
+      self.defaultSelectionsProp.count > 0
       && self.options.count > 0
     ) {
       _ = self.defaultSelectionsProp.map { (columnKey, itemValue) in
@@ -99,26 +102,25 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
   /**
    * Used to visually update the picker items after the data source has changed whilst preserving the
    * currently selected indexes.
+   * @param {NSMutableDictionary} previousSelections: Last known selection indexes of the previous columns.
    * @return {Void}
    */
-  func triggerListUpdate() -> Void {
-    if defaultSelectionsApplied == true {
-      let previousSelections = getCurrentSelectionIndexes()
-      picker.reloadAllComponents()
-      for (i, option) in options.enumerated() {
-        let prevSelection = previousSelections.value(forKey: option.key) as? Int ?? 0
-        if options[i].items.indices.contains(prevSelection) {
-          picker.selectRow(prevSelection, inComponent: i, animated: false)
-        }
+  func triggerListUpdate(previousSelections: NSMutableDictionary) -> Void {
+    picker.reloadAllComponents()
+    for (i, option) in options.enumerated() {
+      let prevSelection = previousSelections.value(forKey: option.key) as? Int ?? 0
+      if options[i].items.indices.contains(prevSelection) {
+        picker.selectRow(prevSelection, inComponent: i, animated: false)
       }
     }
   }
 
   /**
-   * Inserts the selection marker subview in-between the UIPickerView selection lines.
+   * Inserts the selection marker subview in-between the UIPickerView selection lines. This is only
+   * required on iOS versions before 14.
    * @return {Void}
    */
-  func renderSelectionMarker() -> Void {
+  func renderLegacySelectionMarker() -> Void {
     let selectionHighlighter = UIView(frame: CGRect(
       x: 0,
       y: 0,
@@ -167,15 +169,21 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
     forComponent component: Int,
     reusing view: UIView?
   ) -> UIView {
-    if component + 1 == options.count {
-      renderSelectionMarker()
+    if #available(iOS 14, *) {
+      // No need to add the selection marker.
+    } else {
+      // iOS Versions earlier than 14 do not have a background marker, so
+      // we must manually add the sub views:
+      if component + 1 == options.count {
+        renderLegacySelectionMarker()
+      }
+      pickerView.subviews[1].backgroundColor = UIColor(
+        hexString: theme.selectionMarkerBorderColor
+      )
+      pickerView.subviews[2].backgroundColor = UIColor(
+        hexString: theme.selectionMarkerBorderColor
+      )
     }
-    pickerView.subviews[1].backgroundColor = UIColor(
-      hexString: theme.selectionMarkerBorderColor
-    )
-    pickerView.subviews[2].backgroundColor = UIColor(
-      hexString: theme.selectionMarkerBorderColor
-    )
     let itemDimensions = pickerView.rowSize(forComponent: component)
     let width = itemDimensions.width
     let height = itemDimensions.height
@@ -184,7 +192,11 @@ class PickerView: UIView, UIPickerViewDelegate, UIPickerViewDataSource {
     label.text = options[component].items[row].label
     label.accessibilityIdentifier = options[component].items[row].testID
     label.font = label.font.withSize(15.5)
-    label.textColor = UIColor(hexString: theme.pickerItemTextColor)
+    if #available(iOS 14, *) {
+      // Do not modify the font color.
+    } else {
+      label.textColor = UIColor(hexString: theme.pickerItemTextColor)
+    }
     label.textAlignment = .center
     return label
   }

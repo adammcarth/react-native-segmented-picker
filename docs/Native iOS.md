@@ -45,3 +45,15 @@ This will enable the native view for iOS devices, while Android will continue to
 One of the core goals for this library is to make the iOS wheel picker accessible to all different kinds of React Native projects, regardless of the platform or underlying framework. While React Native 0.60+ made some fantastic improvements on automating the installation of native modules, this is still not an option for many projects (especially when using platforms like [Expo](https://expo.io)).
 
 As such, it seems fitting to show confidence in the JavaScript implementation delivering a great experience for most use cases - leaving the native extension as an "optional extra" for more advanced projects.
+
+## iOS 14+ Compatibility
+
+After going many years unchanged, Apple finally updated the design of UIPickerView in iOS 14. It now features a better contrast for the selection marker box with a border radius around the edges.
+
+Whilst this library fully supports iOS 14+, please be aware that it is currently not possible to modify the background color or text color of the selection box for iOS 14+ when using the `native` flag. Only the default native styling it supported at this stage.
+
+This restriction applies to the following props:
+
+- `selectionBackgroundColor`
+- `selectionBorderColor`
+- `pickerItemTextColor`
